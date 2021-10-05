@@ -152,6 +152,10 @@ def get_stream_url(query: str) -> str:
     if 'entries' in res:
         res = res['entries']
 
+    # Youtube turns it into a list ._.
+    if isinstance(res, list):
+        res = res[0]
+
     for i in res['formats']:
         if i['acodec'] != "none":
             return i['url']
