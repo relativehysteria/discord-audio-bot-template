@@ -5,6 +5,7 @@ from pathlib import Path
 import os
 
 import discord
+import youtube_dl
 from discord.ext import commands
 
 ## Global variables and stuff ##################################################
@@ -121,17 +122,37 @@ async def play(ctx, *args):
 
     # Get the name of the audio file we want to play.
     # We either got its ID or its filename
+    is_num = True
     try:
+        # Number
         filename = audioList[int(filename)]
+        source   = f"{AUDIO_DIR}/{filename}"
     except:
-        filename = filename
+        # Url or query
+        source = get_stream_url(filename)
 
     print(f'{strftime(TIME_FORMAT, gmtime())} > ', end='')
     print(f'{CLR_NOTICE}{filename}{CLR_NORMAL}')
 
     # Play the file
-    filename = f"{AUDIO_DIR}/{filename}"
-    currentVCs[guildID].play(discord.FFmpegPCMAudio(filename))
+    if source is None:
+        ctx.send("Not found.")
+    else:
+        currentVCs[guildID].play(discord.FFmpegPCMAudio(source))
+
+# Get the stream url to an audio file from a general url
+def get_stream_url(query: str) -> str:
+    if not query.startswith("http"):
+        query = "ytsearch: " + query
+
+    with youtube_dl.YoutubeDL() as ydl:
+        res = ydl.extract_info(query, download=False)
+
+    # Get the first audio url that we can get
+    for key in res['entries']:
+        for i in key['formats']:
+            if i['acodec'] != "none":
+                return i['url']
 
 
 @bot.command()
