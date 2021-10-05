@@ -109,7 +109,7 @@ async def play(ctx, *args):
         await ctx.send(message)
         return
 
-    filename = args[0]
+    filename = ' '.join(args)
 
     # Only try to play something if the bot is currently in a voice chat
     if guildID not in currentVCs:
