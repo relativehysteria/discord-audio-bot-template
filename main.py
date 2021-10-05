@@ -11,7 +11,7 @@ from discord.ext import commands
 ## Global variables and stuff ##################################################
 
 # Bot
-bot = commands.Bot(command_prefix="bota ")
+bot = commands.Bot(command_prefix="naga ")
 
 # Current active voice clients, or the voice channels the bot is in
 # { serverID: VoiceClient }
