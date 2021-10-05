@@ -149,10 +149,12 @@ def get_stream_url(query: str) -> str:
         res = ydl.extract_info(query, download=False)
 
     # Get the first audio url that we can get
-    for key in res['entries']:
-        for i in key['formats']:
-            if i['acodec'] != "none":
-                return i['url']
+    if 'entries' in res:
+        res = res['entries']
+
+    for i in res['formats']:
+        if i['acodec'] != "none":
+            return i['url']
 
 
 @bot.command()
