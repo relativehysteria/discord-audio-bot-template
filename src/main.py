@@ -36,11 +36,6 @@ CLR_NORMAL  = "\033[0m"
 # Time format given to strftime
 TIME_FORMAT = "%H:%M:%S"
 
-# Messages to send when a specific situation occurs. Can be `None`.
-#
-# The bot is already in a voice channel and someone tries to hijack it
-ALREADY_TAKEN_MSG = "I'm in one channel already"
-
 ## Bot commands and other related functions ####################################
 
 @bot.event
@@ -69,10 +64,10 @@ async def join(ctx, *args):
     elif ctx.author.voice:
         voiceChannel = ctx.author.voice.channel
 
-    # The bot must not be in a voice chat already
+    # The bot CAN be hijacked from other VCs
     if guildID in currentVCs:
-        if ALREADY_TAKEN_MSG: await ctx.send(ALREADY_TAKEN_MSG)
-        return
+        await currentVCs[guildID].disconnect()
+        del currentVCs[guildID]
 
     # Join the voice chat
     if voiceChannel:
