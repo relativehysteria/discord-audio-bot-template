@@ -134,11 +134,16 @@ async def play(ctx, *args):
     print(f'{strftime(TIME_FORMAT, gmtime())} > ', end='')
     print(f'{CLR_NOTICE}{filename}{CLR_NORMAL}')
 
+    # FFMPEG options to prevent stream closing on lost connections
+    before_options = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
+
     # Play the file
     if source is None:
         ctx.send("Not found.")
     else:
-        currentVCs[guildID].play(discord.FFmpegPCMAudio(source))
+        currentVCs[guildID].play(
+            discord.FFmpegPCMAudio(source, before_options=before_options)
+        )
 
 # Get the stream url to an audio file from a general url
 def get_stream_url(query: str) -> str:
