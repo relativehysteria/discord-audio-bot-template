@@ -102,7 +102,11 @@ async def queue(ctx, *args):
     """Shows the currently played queue"""
     guildID = ctx.message.guild.id
     if currentVCs[guildID] is None:
+        return
+
+    if len(currentVCs[guildID].queue) == 0:
         await ctx.send("Queue empty.")
+        return
 
     embed = discord.Embed(title="Queue")
 
