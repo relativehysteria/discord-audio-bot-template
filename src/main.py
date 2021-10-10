@@ -133,6 +133,29 @@ async def clear(ctx, *args):
 
 
 @bot.command()
+async def remove(ctx, *args):
+    """Removes a song from the queue"""
+    queue = currentVCs.get(ctx.message.guild.id)
+    if not queue:
+        return
+    if len(args) < 1:
+        return
+
+    idx = 0
+    try:
+        idx = int(args[0])
+    except:
+        return
+    if idx < 0:
+        return
+    if idx == 0:
+        queue.skip()
+    if idx > len(queue.queue):
+        return
+    queue.remove(idx-1)
+
+
+@bot.command()
 async def play(ctx, *args):
     """Plays something in your voice chat"""
     guildID = ctx.message.guild.id

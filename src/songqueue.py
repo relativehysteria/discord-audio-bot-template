@@ -10,6 +10,9 @@ class InnerQueue(asyncio.Queue):
     def __getitem__(self, item):
         return self._queue[item]
 
+    def __delitem__(self, idx):
+        del self._queue[idx]
+
     def __iter__(self):
         return self._queue.__iter__()
 
@@ -83,3 +86,7 @@ class SongQueue():
             self.voice.resume()
         if self.voice.is_playing():
             queue.voice.pause()
+
+
+    def remove(self, idx: int):
+        del self.queue[idx]
