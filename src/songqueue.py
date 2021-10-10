@@ -35,6 +35,7 @@ class SongQueue():
         self.text    = None  # text chat where the songs are announced, etc.
         self.player  = asyncio.get_running_loop().create_task(self.player_task())
 
+
     async def player_task(self):
         while True:
             self.next.clear()
@@ -64,3 +65,20 @@ class SongQueue():
         if error:
             raise VoiceError(str(error))
         self.next.set()
+
+
+    def skip(self):
+        if self.voice.is_playing():
+            self.voice.stop()
+
+
+    def clear(self):
+        self.queue.clear()
+        self.skip()
+        self.current = None
+
+    def pause(self):
+        if self.voice.is_paused():
+            self.voice.resume()
+        if self.voice.is_playing():
+            queue.voice.pause()

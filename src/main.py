@@ -79,41 +79,37 @@ async def join(ctx, *args):
 @bot.command()
 async def pause(ctx, *args):
     """Pauses the currently playing song"""
-    guildID = ctx.message.guild.id
-    if not currentVCs[guildID]:
+    queue = currentVCs.get(ctx.message.guild.id)
+    if not queue:
         return
-
-    if currentVCs[guildID].voice.is_paused():
-        currentVCs[guildID].voice.resume()
-    elif currentVCs[guildID].voice.is_playing():
-        currentVCs[guildID].voice.pause()
+    queue.pause()
 
 
 @bot.command()
 async def skip(ctx, *args):
     """Skips the currently playing song"""
-    guildID = ctx.message.guild.id
-    if currentVCs[guildID].voice.is_playing():
-        currentVCs[guildID].voice.stop()
+    queue = currentVCs.get(ctx.message.guild.id)
+    if queue:
+        queue.skip()
 
 
 @bot.command()
 async def queue(ctx, *args):
     """Shows the currently played queue"""
-    guildID = ctx.message.guild.id
-    if currentVCs[guildID] is None:
+    queue = currentVCs.get(ctx.message.guild.id)
+    if not queue:
         return
 
-    if len(currentVCs[guildID].queue) == 0:
+    if len(queue.queue) == 0 and not queue.current:
         await ctx.send("Queue empty.")
         return
 
     embed = discord.Embed(title="Queue")
 
     counter = 0
-    msg  = f"`CURRENT` [{currentVCs[guildID].current.title}]"
-    msg += f"({currentVCs[guildID].current.url})\n"
-    for i in currentVCs[guildID].queue:
+    msg  = f"`01` [{queue.current.title}]"
+    msg += f"({queue.current.url})\n\n"
+    for i in queue.queue:
         counter += 1
         msg += f"`{counter:02}` [{i.title}]({i.url})\n"
         if counter == 20:
@@ -128,14 +124,10 @@ async def queue(ctx, *args):
 @bot.command()
 async def clear(ctx, *args):
     """Clears the queue"""
-    guildID = ctx.message.guild.id
-    if currentVCs[guildID] is None:
-        await ctx.send("Queue empty.")
-
-    currentVCs[guildID].queue.clear()
-    currentVCs[guildID].voice.stop()
-    currentVCs[guildID].current = None
-
+    queue = currentVCs.get(ctx.message.guild.id)
+    if not queue:
+        return
+    queue.clear()
 
 
 @bot.command()
