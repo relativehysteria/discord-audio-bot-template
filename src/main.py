@@ -9,6 +9,7 @@ import youtube_dl
 from discord.ext import commands
 
 from song import Song
+from songqueue import SongQueue
 
 ## Global variables and stuff ##################################################
 
@@ -16,7 +17,7 @@ from song import Song
 bot = commands.Bot(command_prefix="naga ")
 
 # Current active voice clients, or the voice channels the bot is in
-# { serverID: VoiceClient }
+# { serverID: SongQueue }
 currentVCs = dict()
 
 ## Settings ####################################################################
@@ -65,22 +66,27 @@ async def join(ctx, *args):
 
     # The bot CAN be hijacked from other VCs
     if guildID in currentVCs:
-        await currentVCs[guildID].disconnect()
+        await currentVCs[guildID].voice.disconnect()
         del currentVCs[guildID]
 
-    # Join the voice chat
+    # Join the voice chat and create an empty queue
     if voiceChannel:
-        currentVCs[guildID] = await voiceChannel.connect()
+        currentVCs[guildID]       = SongQueue()
+        currentVCs[guildID].voice = await voiceChannel.connect()
+        currentVCs[guildID].text  = ctx.message.channel
 
 
 @bot.command()
 async def pause(ctx, *args):
     """Pauses the currently playing song"""
     guildID = ctx.message.guild.id
-    if currentVCs[guildID].is_paused():
-        currentVCs[guildID].resume()
-    elif currentVCs[guildID].is_playing():
-        currentVCs[guildID].pause()
+    if not currentVCs[guildID]:
+        return
+
+    if currentVCs[guildID].voice.is_paused():
+        currentVCs[guildID].voice.resume()
+    elif currentVCs[guildID].voice.is_playing():
+        currentVCs[guildID].voice.pause()
 
 
 @bot.command()
@@ -96,36 +102,16 @@ async def play(ctx, *args):
     if guildID not in currentVCs:
         return
 
-    # We don't implement a queue for audio, so we simply interrupt the one that
-    # is currenty playing
-    if currentVCs[guildID].is_playing():
-        currentVCs[guildID].stop()
-
     song = get_song(query)
 
     print(f'{strftime(TIME_FORMAT, gmtime())} > ', end='')
     print(f'{CLR_NOTICE}{query}{CLR_NORMAL}')
 
-    # FFMPEG options to prevent stream closing on lost connections
-    before_options = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
-
-    # Send out a status message and play the stream
+    # Send out a status message and put the stream to a queue
     if not song.valid:
         await ctx.send("Not found.")
     else:
-
-        msg = discord.Embed(title="Now playing",
-                description=f"[{song.title}](song.url)")
-        msg.add_field(name="Duration",
-                value=song.duration_formatted)
-        msg.add_field(name="Uploader",
-                value=f"[{song.uploader}]({song.uploader_url})")
-        msg.set_thumbnail(url=song.thumbnail)
-        await ctx.send(embed=msg)
-
-        currentVCs[guildID].play(
-            discord.FFmpegPCMAudio(song.stream, before_options=before_options)
-        )
+        await currentVCs[guildID].queue.put(song)
 
 
 def get_song(query: str) -> Song:
@@ -157,7 +143,7 @@ async def leave(ctx):
     """Leaves the voice chat"""
     guildID = ctx.message.guild.id
     if guildID in currentVCs:
-        await currentVCs[guildID].disconnect()
+        await currentVCs[guildID].voice.disconnect()
         del currentVCs[guildID]
 
 ################################################################################
