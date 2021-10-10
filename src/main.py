@@ -89,6 +89,8 @@ async def play(ctx, *args):
     guildID = ctx.message.guild.id
 
     filename = ' '.join(args)
+    if filename == "":
+        return
 
     # Only try to play something if the bot is currently in a voice chat
     if guildID not in currentVCs:
@@ -109,7 +111,7 @@ async def play(ctx, *args):
 
     # Play the file
     if not song.valid:
-        ctx.send("Not found.")
+        await ctx.send("Not found.")
     else:
         currentVCs[guildID].play(
             discord.FFmpegPCMAudio(song.stream, before_options=before_options)
@@ -134,7 +136,7 @@ def get_song(query: str) -> Song:
     # Youtube turns it into a list ._.
     if isinstance(res, list):
         if len(res) == 0:
-            return None
+            return Song(dict())  # invalid Song
         res = res[0]
 
     return Song(res)
