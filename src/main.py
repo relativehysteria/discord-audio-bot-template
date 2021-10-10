@@ -109,16 +109,20 @@ async def queue(ctx, *args):
     embed = discord.Embed(title="Queue")
 
     counter = 0
-    msg  = f"`01` [{queue.current.title}]"
-    msg += f"({queue.current.url})\n\n"
+    embed.add_field(
+        name="Current",
+        value=f"`{counter:02}` [{queue.current.title}]({queue.current.url})\n\n"
+    )
+
+    msg = ""
     for i in queue.queue:
         counter += 1
         msg += f"`{counter:02}` [{i.title}]({i.url})\n"
         if counter == 20:
             msg += "`...`"
             break
-
-    embed.add_field(name="Nex up...", value=msg)
+    if msg != "":
+        embed.insert_field_at(0, name="Next up...", value=msg)
 
     await ctx.send(embed=embed)
 
@@ -150,6 +154,7 @@ async def remove(ctx, *args):
         return
     if idx == 0:
         queue.skip()
+        return
     if idx > len(queue.queue):
         return
     queue.remove(idx-1)
