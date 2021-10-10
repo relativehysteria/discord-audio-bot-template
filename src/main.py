@@ -42,9 +42,11 @@ TIME_FORMAT = "%H:%M:%S"
 async def on_connect():
     print(f"{CLR_NOTICE}Startup latency: {int(bot.latency * 1000)}ms{CLR_NORMAL}")
 
+
 @bot.event
 async def on_ready():
     print(f"{CLR_SUCCESS}READY{CLR_NORMAL} ({strftime(TIME_FORMAT, gmtime())})")
+
 
 @bot.command()
 async def join(ctx, *args):
