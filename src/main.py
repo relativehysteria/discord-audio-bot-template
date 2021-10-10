@@ -17,9 +17,6 @@ bot = commands.Bot(command_prefix="naga ")
 # { serverID: VoiceClient }
 currentVCs = dict()
 
-# Names of the audio files that this bot can play
-audioList  = list()
-
 ## Settings ####################################################################
 
 # Directory where the audio files (used in the `play` command) are stored.
@@ -81,33 +78,10 @@ async def join(ctx, *args):
     if voiceChannel:
         currentVCs[guildID] = await voiceChannel.connect()
 
-
-def format_audio() -> str:
-    """
-    Formats the filenames in audioList into a readable message;
-    ID > Filename
-    """
-    message = ""
-    # We skip the first element, because it is `None`
-    for i in range(1, len(audioList)):
-        message += f"{i} > {audioList[i].replace('.mp3', '').replace('_', ' ')}"
-        message += '\n'
-    return message
-
-
 @bot.command()
 async def play(ctx, *args):
     """Plays something in your voice chat"""
     guildID = ctx.message.guild.id
-
-    # If no argument (filename) was given, send the list of files to play
-    # together with their ID
-    if len(args) == 0:
-        message  = "```\n"
-        message += format_audio()
-        message += "```"
-        await ctx.send(message)
-        return
 
     filename = ' '.join(args)
 
@@ -120,16 +94,7 @@ async def play(ctx, *args):
     if currentVCs[guildID].is_playing:
         currentVCs[guildID].stop()
 
-    # Get the name of the audio file we want to play.
-    # We either got its ID or its filename
-    is_num = True
-    try:
-        # Number
-        filename = audioList[int(filename)]
-        source   = f"{AUDIO_DIR}/{filename}"
-    except:
-        # Url or query
-        source = get_stream_url(filename)
+    source = get_stream_url(filename)
 
     print(f'{strftime(TIME_FORMAT, gmtime())} > ', end='')
     print(f'{CLR_NOTICE}{filename}{CLR_NORMAL}')
@@ -180,12 +145,6 @@ async def leave(ctx):
 ################################################################################
 
 if __name__ == "__main__":
-    # Load audio file names into audioList
-    # https://stackoverflow.com/a/4500607
-    mtime = lambda f: os.stat(os.path.join(AUDIO_DIR, f)).st_mtime
-    audioList.append(None)
-    audioList += list(sorted(os.listdir(AUDIO_DIR), key=mtime))
-
     with open(TOKEN_FILE) as f:
         TOKEN = f.read().strip()
     bot.run(TOKEN)
