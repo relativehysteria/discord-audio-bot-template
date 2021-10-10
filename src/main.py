@@ -110,10 +110,9 @@ async def queue(ctx, *args):
 
     embed = discord.Embed(title="Queue")
 
-    counter = 1
-    msg  = f"`{counter:02}` [{currentVCs[guildID].current.title}]"
+    counter = 0
+    msg  = f"`CURRENT` [{currentVCs[guildID].current.title}]"
     msg += f"({currentVCs[guildID].current.url})\n"
-
     for i in currentVCs[guildID].queue:
         counter += 1
         msg += f"`{counter:02}` [{i.title}]({i.url})\n"
