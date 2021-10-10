@@ -104,6 +104,8 @@ async def play(ctx, *args):
 
 # Get the stream url to an audio file from a general url
 def get_stream_url(query: str) -> str:
+    query = query.strip()
+
     if not query.startswith("http"):
         query = "ytsearch: " + query
 
