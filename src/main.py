@@ -98,6 +98,31 @@ async def skip(ctx, *args):
 
 
 @bot.command()
+async def queue(ctx, *args):
+    """Shows the currently played queue"""
+    guildID = ctx.message.guild.id
+    if currentVCs[guildID] is None:
+        await ctx.send("Queue empty.")
+
+    embed = discord.Embed(title="Queue")
+
+    counter = 1
+    msg  = f"`{counter:02}` [{currentVCs[guildID].current.title}]"
+    msg += f"({currentVCs[guildID].current.url})\n"
+
+    for i in currentVCs[guildID].queue:
+        counter += 1
+        msg += f"`{counter:02}` [{i.title}]({i.url})\n"
+        if counter == 20:
+            msg += "`...`"
+            break
+
+    embed.add_field(name="Nex up...", value=msg)
+
+    await ctx.send(embed=embed)
+
+
+@bot.command()
 async def play(ctx, *args):
     """Plays something in your voice chat"""
     guildID = ctx.message.guild.id
