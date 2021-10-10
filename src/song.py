@@ -4,6 +4,7 @@ class Song():
             # If we encounter an error during indexing into the result,
             # this song is simply rendered invalid..
             self.valid              = True
+            self.title              = ytdl_result["title"]
             self.uploader           = ytdl_result["uploader"]
             self.uploader_url       = ytdl_result["uploader_url"]
             self.url                = ytdl_result["webpage_url"]
