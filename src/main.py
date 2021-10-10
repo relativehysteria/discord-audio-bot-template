@@ -115,11 +115,9 @@ async def play(ctx, *args):
     else:
 
         msg = discord.Embed(title="Now playing",
-                description=f"{song.title}")
+                description=f"[{song.title}](song.url)")
         msg.add_field(name="Duration",
                 value=song.duration_formatted)
-        msg.add_field(name="URL",
-                value=f"[{song.url}]({song.url})")
         msg.add_field(name="Uploader",
                 value=f"[{song.uploader}]({song.uploader_url})")
         msg.set_thumbnail(url=song.thumbnail)
