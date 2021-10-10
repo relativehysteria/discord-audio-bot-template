@@ -5,6 +5,7 @@ class Song():
             # this song is simply rendered invalid..
             self.valid              = True
             self.uploader           = ytdl_result["uploader"]
+            self.uploader_url       = ytdl_result["uploader_url"]
             self.url                = ytdl_result["webpage_url"]
             self.duration           = ytdl_result["duration"]
             self.stream             = get_stream_url(ytdl_result)
