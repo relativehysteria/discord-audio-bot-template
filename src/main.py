@@ -19,9 +19,6 @@ currentVCs = dict()
 
 ## Settings ####################################################################
 
-# Directory where the audio files (used in the `play` command) are stored.
-AUDIO_DIR   = "audio"
-
 # File where the token for the bot is stored
 TOKEN_FILE  = "TOKEN"
 
