@@ -123,6 +123,19 @@ async def queue(ctx, *args):
 
 
 @bot.command()
+async def clear(ctx, *args):
+    """Clears the queue"""
+    guildID = ctx.message.guild.id
+    if currentVCs[guildID] is None:
+        await ctx.send("Queue empty.")
+
+    currentVCs[guildID].queue.clear()
+    currentVCs[guildID].voice.stop()
+    currentVCs[guildID].current = None
+
+
+
+@bot.command()
 async def play(ctx, *args):
     """Plays something in your voice chat"""
     guildID = ctx.message.guild.id
