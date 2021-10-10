@@ -88,8 +88,8 @@ async def play(ctx, *args):
     """Plays something in your voice chat"""
     guildID = ctx.message.guild.id
 
-    filename = ' '.join(args)
-    if filename == "":
+    query = ' '.join(args)
+    if query == "":
         return
 
     # Only try to play something if the bot is currently in a voice chat
@@ -101,18 +101,30 @@ async def play(ctx, *args):
     if currentVCs[guildID].is_playing():
         currentVCs[guildID].stop()
 
-    song = get_song(filename)
+    song = get_song(query)
 
     print(f'{strftime(TIME_FORMAT, gmtime())} > ', end='')
-    print(f'{CLR_NOTICE}{filename}{CLR_NORMAL}')
+    print(f'{CLR_NOTICE}{query}{CLR_NORMAL}')
 
     # FFMPEG options to prevent stream closing on lost connections
     before_options = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
 
-    # Play the file
+    # Send out a status message and play the stream
     if not song.valid:
         await ctx.send("Not found.")
     else:
+
+        msg = discord.Embed(title="Now playing",
+                description=f"{song.title}")
+        msg.add_field(name="Duration",
+                value=song.duration_formatted)
+        msg.add_field(name="URL",
+                value=f"[{song.url}]({song.url})")
+        msg.add_field(name="Uploader",
+                value=f"[{song.uploader}]({song.uploader_url})")
+        msg.set_thumbnail(url=song.thumbnail)
+        await ctx.send(embed=msg)
+
         currentVCs[guildID].play(
             discord.FFmpegPCMAudio(song.stream, before_options=before_options)
         )
