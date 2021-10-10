@@ -118,8 +118,8 @@ async def play(ctx, *args):
         )
 
 
-# Get the stream url to an audio file from a general url
 def get_song(query: str) -> Song:
+    """Get the stream url to an audio file from a general url"""
     query = query.strip()
 
     if not query.startswith("http"):
