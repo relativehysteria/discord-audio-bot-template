@@ -90,6 +90,14 @@ async def pause(ctx, *args):
 
 
 @bot.command()
+async def skip(ctx, *args):
+    """Skips the currently playing song"""
+    guildID = ctx.message.guild.id
+    if currentVCs[guildID].voice.is_playing():
+        currentVCs[guildID].voice.stop()
+
+
+@bot.command()
 async def play(ctx, *args):
     """Plays something in your voice chat"""
     guildID = ctx.message.guild.id
