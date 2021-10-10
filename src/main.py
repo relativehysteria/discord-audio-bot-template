@@ -74,6 +74,16 @@ async def join(ctx, *args):
 
 
 @bot.command()
+async def pause(ctx, *args):
+    """Pauses the currently playing song"""
+    guildID = ctx.message.guild.id
+    if currentVCs[guildID].is_paused():
+        currentVCs[guildID].resume()
+    elif currentVCs[guildID].is_playing():
+        currentVCs[guildID].pause()
+
+
+@bot.command()
 async def play(ctx, *args):
     """Plays something in your voice chat"""
     guildID = ctx.message.guild.id
@@ -86,7 +96,7 @@ async def play(ctx, *args):
 
     # We don't implement a queue for audio, so we simply interrupt the one that
     # is currenty playing
-    if currentVCs[guildID].is_playing:
+    if currentVCs[guildID].is_playing():
         currentVCs[guildID].stop()
 
     song = get_song(filename)
