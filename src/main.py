@@ -72,6 +72,7 @@ async def join(ctx, *args):
     if voiceChannel:
         currentVCs[guildID] = await voiceChannel.connect()
 
+
 @bot.command()
 async def play(ctx, *args):
     """Plays something in your voice chat"""
@@ -104,6 +105,7 @@ async def play(ctx, *args):
             discord.FFmpegPCMAudio(song.stream, before_options=before_options)
         )
 
+
 # Get the stream url to an audio file from a general url
 def get_song(query: str) -> Song:
     query = query.strip()
@@ -118,8 +120,6 @@ def get_song(query: str) -> Song:
     # Get the first audio url that we can get
     if 'entries' in res:
         res = res['entries']
-    with open("testing.txt", 'w') as f:
-        f.write(str(res))
 
     # Youtube turns it into a list ._.
     if isinstance(res, list):
