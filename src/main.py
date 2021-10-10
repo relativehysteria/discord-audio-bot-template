@@ -8,6 +8,8 @@ import discord
 import youtube_dl
 from discord.ext import commands
 
+from song import Song
+
 ## Global variables and stuff ##################################################
 
 # Bot
@@ -86,7 +88,7 @@ async def play(ctx, *args):
     if currentVCs[guildID].is_playing:
         currentVCs[guildID].stop()
 
-    source = get_stream_url(filename)
+    song = get_song(filename)
 
     print(f'{strftime(TIME_FORMAT, gmtime())} > ', end='')
     print(f'{CLR_NOTICE}{filename}{CLR_NORMAL}')
@@ -95,15 +97,15 @@ async def play(ctx, *args):
     before_options = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
 
     # Play the file
-    if source is None:
+    if not song.valid:
         ctx.send("Not found.")
     else:
         currentVCs[guildID].play(
-            discord.FFmpegPCMAudio(source, before_options=before_options)
+            discord.FFmpegPCMAudio(song.stream, before_options=before_options)
         )
 
 # Get the stream url to an audio file from a general url
-def get_stream_url(query: str) -> str:
+def get_song(query: str) -> Song:
     query = query.strip()
 
     if not query.startswith("http"):
@@ -116,6 +118,8 @@ def get_stream_url(query: str) -> str:
     # Get the first audio url that we can get
     if 'entries' in res:
         res = res['entries']
+    with open("testing.txt", 'w') as f:
+        f.write(str(res))
 
     # Youtube turns it into a list ._.
     if isinstance(res, list):
@@ -123,9 +127,7 @@ def get_stream_url(query: str) -> str:
             return None
         res = res[0]
 
-    for i in res['formats']:
-        if i['acodec'] != "none":
-            return i['url']
+    return Song(res)
 
 
 @bot.command()
