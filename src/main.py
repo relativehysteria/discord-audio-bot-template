@@ -150,7 +150,8 @@ def get_stream_url(query: str) -> str:
     if not query.startswith("http"):
         query = "ytsearch: " + query
 
-    with youtube_dl.YoutubeDL() as ydl:
+    ydl_opts = {'youtube_include_dash_manifest': False}
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         res = ydl.extract_info(query, download=False)
 
     # Get the first audio url that we can get
