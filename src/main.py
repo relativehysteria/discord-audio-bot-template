@@ -98,7 +98,7 @@ async def queue(ctx, *args):
         return
 
     status = "LOOP:"if queue._loop else "00"
-    embed = discord.Embed(title="Queue", inline=False)
+    embed = discord.Embed(title=f"Queue `[{len(queue.queue)}]`", inline=False)
 
     msg  = f"`{status}` `[{queue.current.duration_formatted}]`"
     msg += f" [{queue.current.title}]({queue.current.url})\n\n"
