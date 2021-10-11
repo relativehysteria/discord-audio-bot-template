@@ -5,7 +5,6 @@ from pathlib import Path
 import os
 
 import discord
-import youtube_dl
 from discord.ext import commands
 
 from song import Song
@@ -98,6 +97,17 @@ async def save(ctx, *args):
 
 
 @bot.command()
+async def load(ctx, *args):
+    """Loads a saved playlist into the queue."""
+    if len(args) < 1:
+        # TODO: formatting and help and such
+        pass
+    queue = currentVCs.get(ctx.message.guild.id)
+    if queue:
+        await queue.load(' '.join(args))
+
+
+@bot.command()
 async def queue(ctx, *args):
     """Shows the currently played queue"""
     queue = currentVCs.get(ctx.message.guild.id)
@@ -172,50 +182,18 @@ async def remove(ctx, *args):
 @bot.command()
 async def play(ctx, *args):
     """Plays something in your voice chat"""
-    guildID = ctx.message.guild.id
+    queue = currentVCs.get(ctx.message.guild.id)
+    if not queue:
+        return
 
     query = ' '.join(args)
     if query == "":
         return
 
-    # Only try to play something if the bot is currently in a voice chat
-    if guildID not in currentVCs:
-        return
-
-    song = get_song(query)
-
     print(f'{strftime(TIME_FORMAT, gmtime())} > ', end='')
     print(f'{CLR_NOTICE}{query}{CLR_NORMAL}')
 
-    # Send out a status message and put the stream to a queue
-    if not song.valid:
-        await ctx.send("Not found.")
-    else:
-        await currentVCs[guildID].queue.put(song)
-
-
-def get_song(query: str) -> Song:
-    """Get the stream url to an audio file from a general url"""
-    query = query.strip()
-
-    if not query.startswith("http"):
-        query = "ytsearch: " + query
-
-    ydl_opts = {'youtube_include_dash_manifest': False}
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        res = ydl.extract_info(query, download=False)
-
-    # Get the first audio url that we can get
-    if 'entries' in res:
-        res = res['entries']
-
-    # Youtube turns it into a list ._.
-    if isinstance(res, list):
-        if len(res) == 0:
-            return Song(dict())  # invalid Song
-        res = res[0]
-
-    return Song(res)
+    await queue.enqueue(query)
 
 
 @bot.command()

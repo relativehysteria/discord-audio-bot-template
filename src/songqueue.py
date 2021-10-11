@@ -1,6 +1,8 @@
 from random import shuffle
+from os.path import exists
 import asyncio
 
+import youtube_dl
 import discord
 
 from song import Song
@@ -105,7 +107,49 @@ class SongQueue():
     def shuffle(self):
         self.queue.shuffle()
 
+
     def save(self, name: str):
         with open(f"{PLAYLISTDIR}/{name}", 'w') as f:
             for song in self.queue:
                 f.write(f"{song.url}\n")
+
+
+    async def enqueue(self, query: str):
+        song = get_song(query)
+        if song.valid:
+            await self.queue.put(song)
+
+
+    async def load(self, name: str):
+        if not exists(f"{PLAYLISTDIR}/{name}"):
+            return
+
+        with open(f"{PLAYLISTDIR}/{name}") as f:
+            lines = f.readlines()
+
+        for line in lines:
+            await self.enqueue(line)
+
+
+def get_song(query: str) -> Song:
+    """Get the stream url to an audio file from a general url"""
+    query = query.strip()
+
+    if not query.startswith("http"):
+        query = "ytsearch: " + query
+
+    ydl_opts = {'youtube_include_dash_manifest': False}
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        res = ydl.extract_info(query, download=False)
+
+    # Get the first audio url that we can get
+    if 'entries' in res:
+        res = res['entries']
+
+    # Youtube turns it into a list ._.
+    if isinstance(res, list):
+        if len(res) == 0:
+            return Song(dict())  # invalid Song
+        res = res[0]
+
+    return Song(res)
