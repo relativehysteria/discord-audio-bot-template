@@ -1,6 +1,9 @@
 # File where the token for the bot is stored
 TOKEN_FILE  = "TOKEN"
 
+# Directory that holds the saved playlists
+PLAYLISTDIR = "playlists"
+
 # Text color settings used by the bot in different messages.
 # If your terminal (or whatever you're running this bot in) doesn't support ANSI
 # escape sequences, you might want to set all of these values to "".

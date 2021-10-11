@@ -4,6 +4,7 @@ import asyncio
 import discord
 
 from song import Song
+from settings import PLAYLISTDIR
 
 
 class InnerQueue(asyncio.Queue):
@@ -103,3 +104,8 @@ class SongQueue():
 
     def shuffle(self):
         self.queue.shuffle()
+
+    def save(self, name: str):
+        with open(f"{PLAYLISTDIR}/{name}", 'w') as f:
+            for song in self.queue:
+                f.write(f"{song.url}\n")

@@ -88,6 +88,16 @@ async def shuffle(ctx, *args):
 
 
 @bot.command()
+async def save(ctx, *args):
+    """Saves the current queue into a playlist that can be loaded later on."""
+    if len(args) < 1:
+        return
+    queue = currentVCs.get(ctx.message.guild.id)
+    if queue:
+        queue.save(' '.join(args))
+
+
+@bot.command()
 async def queue(ctx, *args):
     """Shows the currently played queue"""
     queue = currentVCs.get(ctx.message.guild.id)
