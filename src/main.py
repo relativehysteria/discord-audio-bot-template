@@ -225,11 +225,12 @@ async def show(ctx, *args):
         return
 
     name = " ".join(args)
-    if not os.path.exists(f"{PLAYLISTDIR}/{name}"):
+    path = f"{PLAYLISTDIR}/{name}.txt"
+    if not os.path.exists(path):
         await ctx.send(f"Playlist `{name}` doesn't exist.")
         return
 
-    with open(f"{PLAYLISTDIR}/{name}") as f:
+    with open(path) as f:
         await ctx.send(file=discord.File(f))
 
 

@@ -118,7 +118,7 @@ class SongQueue():
 
 
     def save(self, name: str):
-        with open(f"{PLAYLISTDIR}/{name}", 'w') as f:
+        with open(f"{PLAYLISTDIR}/{name}.txt", 'w') as f:
             f.write(f"{self.current.url}\n")
             for song in self.queue:
                 f.write(f"{song.url}\n")
@@ -131,10 +131,11 @@ class SongQueue():
 
 
     async def load(self, name: str):
-        if not exists(f"{PLAYLISTDIR}/{name}"):
+        name = f"{PLAYLISTDIR}/{name}.txt"
+        if not exists(f"{name}"):
             return
 
-        with open(f"{PLAYLISTDIR}/{name}") as f:
+        with open(f"{name}") as f:
             lines = f.readlines()
 
         for line in lines:
