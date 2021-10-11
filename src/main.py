@@ -82,9 +82,8 @@ async def join(ctx, *args):
 async def pause(ctx, *args):
     """Pauses the currently playing song"""
     queue = currentVCs.get(ctx.message.guild.id)
-    if not queue:
-        return
-    queue.pause()
+    if queue:
+        queue.pause()
 
 
 @bot.command()
@@ -93,6 +92,14 @@ async def skip(ctx, *args):
     queue = currentVCs.get(ctx.message.guild.id)
     if queue:
         queue.skip()
+
+
+@bot.command()
+async def shuffle(ctx, *args):
+    """Shuffles the queue"""
+    queue = currentVCs.get(ctx.message.guild.id)
+    if queue:
+        queue.shuffle()
 
 
 @bot.command()
@@ -132,17 +139,15 @@ async def queue(ctx, *args):
 async def clear(ctx, *args):
     """Clears the queue"""
     queue = currentVCs.get(ctx.message.guild.id)
-    if not queue:
-        return
-    queue.clear()
+    if queue:
+        queue.clear()
 
 
 @bot.command()
 async def loop(ctx, *args):
     queue = currentVCs.get(ctx.message.guild.id)
-    if not queue:
-        return
-    queue.loop()
+    if queue:
+        queue.loop()
 
 
 @bot.command()

@@ -99,3 +99,7 @@ class SongQueue():
 
     def loop(self):
         self._loop = not self._loop
+
+
+    def shuffle(self):
+        self.queue.shuffle()
