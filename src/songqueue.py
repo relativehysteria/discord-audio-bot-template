@@ -37,12 +37,14 @@ class SongQueue():
         self.voice   = None  # voice client
         self.text    = None  # text chat where the songs are announced, etc.
         self.player  = asyncio.get_running_loop().create_task(self.player_task())
+        self._loop    = False
 
 
     async def player_task(self):
         while True:
             self.next.clear()
-            self.current = await self.queue.get()
+            if not self._loop:
+                self.current = await self.queue.get()
 
             # FFMPEG options to prevent stream closing on lost connections
             before_options  = "-reconnect 1 -reconnect_streamed 1"
@@ -52,15 +54,17 @@ class SongQueue():
                                             before_options=before_options)
             self.voice.play(source, after=self.next_song)
 
-            msg = discord.Embed(title="Now playing",
-                    description=f"[{self.current.title}]({self.current.url})")
-            msg.add_field(name="Duration",
-                    value=self.current.duration_formatted)
-            msg.add_field(name="Uploader",
-                    value=f"[{self.current.uploader}]({self.current.uploader_url})")
-            msg.set_thumbnail(url=self.current.thumbnail)
+            # Prevent the bot from spamming the same song
+            if not self._loop:
+                msg = discord.Embed(title="Now playing", description=
+                    f"[{self.current.title}]({self.current.url})")
+                msg.add_field(name="Duration", value=
+                        self.current.duration_formatted)
+                msg.add_field(name="Uploader", value=
+                    f"[{self.current.uploader}]({self.current.uploader_url})")
+                msg.set_thumbnail(url=self.current.thumbnail)
+                await self.text.send(embed=msg)
 
-            await self.text.send(embed=msg)
             await self.next.wait()
 
 
@@ -72,6 +76,7 @@ class SongQueue():
 
     def skip(self):
         if self.voice.is_playing():
+            self._loop = False
             self.voice.stop()
 
 
@@ -90,3 +95,7 @@ class SongQueue():
 
     def remove(self, idx: int):
         del self.queue[idx]
+
+
+    def loop(self):
+        self._loop = not self._loop

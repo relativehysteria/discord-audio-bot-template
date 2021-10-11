@@ -108,12 +108,13 @@ async def queue(ctx, *args):
 
     embed = discord.Embed(title="Queue")
 
-    counter = 0
+    status = "LOOP:"if queue._loop else "00"
     embed.add_field(
         name="Current",
-        value=f"`{counter:02}` [{queue.current.title}]({queue.current.url})\n\n"
+        value=f"`{status}` [{queue.current.title}]({queue.current.url})\n\n"
     )
 
+    counter = 0
     msg = ""
     for i in queue.queue:
         counter += 1
@@ -134,6 +135,14 @@ async def clear(ctx, *args):
     if not queue:
         return
     queue.clear()
+
+
+@bot.command()
+async def loop(ctx, *args):
+    queue = currentVCs.get(ctx.message.guild.id)
+    if not queue:
+        return
+    queue.loop()
 
 
 @bot.command()
