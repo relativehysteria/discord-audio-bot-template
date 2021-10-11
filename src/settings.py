@@ -4,6 +4,9 @@ TOKEN_FILE  = "TOKEN"
 # Directory that holds the saved playlists
 PLAYLISTDIR = "playlists"
 
+# Delimiter in the playlist files. This is put between the url and the title
+PLAYLISTDELIM = " >>> "
+
 # Text color settings used by the bot in different messages.
 # If your terminal (or whatever you're running this bot in) doesn't support ANSI
 # escape sequences, you might want to set all of these values to "".

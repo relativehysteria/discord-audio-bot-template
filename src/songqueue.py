@@ -7,7 +7,7 @@ import youtube_dl
 import discord
 
 from song import Song
-from settings import PLAYLISTDIR
+from settings import PLAYLISTDIR, PLAYLISTDELIM
 
 
 class InnerQueue(asyncio.Queue):
@@ -117,17 +117,17 @@ class SongQueue():
         self.queue.shuffle()
 
 
-    def save(self, name: str):
-        with open(f"{PLAYLISTDIR}/{name}.txt", 'w') as f:
-            f.write(f"{self.current.url}\n")
-            for song in self.queue:
-                f.write(f"{song.url}\n")
-
-
     async def enqueue(self, query: str):
         song = get_song(query)
         if song.valid:
             await self.queue.put(song)
+
+
+    def save(self, name: str):
+        with open(f"{PLAYLISTDIR}/{name}.txt", 'w') as f:
+            f.write(f"{self.current.url}{PLAYLISTDELIM}{self.current.title}\n")
+            for song in self.queue:
+                f.write(f"{song.url}{PLAYLISTDELIM}{song.title}\n")
 
 
     async def load(self, name: str):
@@ -139,6 +139,7 @@ class SongQueue():
             lines = f.readlines()
 
         for line in lines:
+            url = line.split(PLAYLISTDELIM)[0]
             await self.enqueue(line)
 
 
