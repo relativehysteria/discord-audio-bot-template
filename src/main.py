@@ -111,7 +111,6 @@ async def load(ctx, *args):
 
     msg = "**Playlists:**```\n"
     for fname in sortedlist:
-        print(fname)
         msg += f"{fname}\n"
     msg += "```"
     await ctx.send(msg)
