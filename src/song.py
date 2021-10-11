@@ -27,14 +27,12 @@ def parse_duration(duration: int):
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
 
-    duration = []
+    duration = ""
     if days > 0:
-        duration.append('{} days'.format(days))
-    if hours > 0:
-        duration.append('{} hours'.format(hours))
-    if minutes > 0:
-        duration.append('{} minutes'.format(minutes))
-    if seconds > 0:
-        duration.append('{} seconds'.format(seconds))
+        duration += f"{days:02}:"
+    if hours > 0 or days > 0:
+        duration += f"{hours:02}:"
+    duration += f"{minutes:02}:"
+    duration += f"{seconds:02}"
 
-    return ', '.join(duration)
+    return duration
