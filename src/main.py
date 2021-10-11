@@ -189,7 +189,8 @@ async def leave(ctx):
 @bot.group()
 async def playlist(ctx):
     """Manipulate playlists"""
-    pass
+    if ctx.invoked_subcommand is None:
+        await ctx.send(format_playlists())
 
 
 @playlist.command()
