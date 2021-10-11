@@ -127,24 +127,25 @@ async def queue(ctx, *args):
         await ctx.send("Queue empty.")
         return
 
-    embed = discord.Embed(title="Queue")
-
     status = "LOOP:"if queue._loop else "00"
+    embed = discord.Embed(title="Queue", inline=False)
     embed.add_field(
         name="Current",
-        value=f"`{status}` [{queue.current.title}]({queue.current.url})\n\n"
+        value=f"`{status}` [{queue.current.title}]({queue.current.url})\n\n",
+        inline=False
     )
 
-    counter = 0
     msg = ""
-    for i in queue.queue:
-        counter += 1
-        msg += f"`{counter:02}` [{i.title}]({i.url})\n"
-        if counter == 20:
+    for (counter, song) in enumerate(queue.queue, start=1):
+        pre_msg = f"`{counter:02}` [{song.title}]({song.url})\n"
+        # Embed value limit is 1024 chars
+        if len(msg + pre_msg) >= 1020:
             msg += "`...`"
             break
+        msg += pre_msg
+
     if msg != "":
-        embed.insert_field_at(0, name="Next up...", value=msg)
+        embed.add_field(name="Next up...", value=msg, inline=False)
 
     await ctx.send(embed=embed)
 

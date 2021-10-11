@@ -1,5 +1,6 @@
 from random import shuffle
 from os.path import exists
+from itertools import islice
 import asyncio
 
 import youtube_dl
@@ -11,7 +12,15 @@ from settings import PLAYLISTDIR
 
 class InnerQueue(asyncio.Queue):
     def __getitem__(self, item):
-        return self._queue[item]
+        if isinstance(item, slice):
+            return list(islice(
+                self._queue,
+                item.start,
+                item.stop,
+                item.step)
+            )
+        else:
+            return self._queue[item]
 
     def __delitem__(self, idx):
         del self._queue[idx]
