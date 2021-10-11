@@ -10,6 +10,7 @@ from discord.ext import commands
 
 from song import Song
 from songqueue import SongQueue
+from settings import *
 
 ## Global variables and stuff ##################################################
 
@@ -19,22 +20,6 @@ bot = commands.Bot(command_prefix="naga ")
 # Current active voice clients, or the voice channels the bot is in
 # { serverID: SongQueue }
 currentVCs = dict()
-
-## Settings ####################################################################
-
-# File where the token for the bot is stored
-TOKEN_FILE  = "TOKEN"
-
-# Text color settings used by the bot in different messages.
-# If your terminal (or whatever you're running this bot in) doesn't support ANSI
-# escape sequences, you might want to set all of these values to "".
-CLR_WARNING = "\033[31m"
-CLR_SUCCESS = "\033[92m"
-CLR_NOTICE  = "\033[36m"
-CLR_NORMAL  = "\033[0m"
-
-# Time format given to strftime
-TIME_FORMAT = "%H:%M:%S"
 
 ## Bot commands and other related functions ####################################
 
