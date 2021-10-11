@@ -110,6 +110,7 @@ class SongQueue():
 
     def save(self, name: str):
         with open(f"{PLAYLISTDIR}/{name}", 'w') as f:
+            f.write(f"{self.current.url}\n")
             for song in self.queue:
                 f.write(f"{song.url}\n")
 
