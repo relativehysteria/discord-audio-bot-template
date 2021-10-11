@@ -86,43 +86,6 @@ async def shuffle(ctx, *args):
         queue.shuffle()
 
 
-@bot.group()
-async def playlist(ctx):
-    """Manipulate playlists"""
-    pass
-
-
-@playlist.command()
-async def save(ctx, *args):
-    """Saves the current queue into a playlist that can be loaded later on."""
-    if len(args) < 1:
-        await ctx.send("No name specified.")
-
-    queue = currentVCs.get(ctx.message.guild.id)
-    if queue:
-        queue.save(' '.join(args))
-
-
-@playlist.command()
-async def load(ctx, *args):
-    """Loads a saved playlist into the queue."""
-    if len(args) >= 1:
-        queue = currentVCs.get(ctx.message.guild.id)
-        if queue:
-            await queue.load(' '.join(args))
-        return
-
-    # https://stackoverflow.com/a/4500607
-    mtime      = lambda f: os.stat(os.path.join(f"{PLAYLISTDIR}", f)).st_mtime
-    sortedlist = list(sorted(os.listdir(f"{PLAYLISTDIR}"), key=mtime))
-
-    msg = "**Playlists:**```\n"
-    for fname in sortedlist:
-        msg += f"{fname}\n"
-    msg += "```"
-    await ctx.send(msg)
-
-
 @bot.command()
 async def queue(ctx, *args):
     """Shows the currently played queue"""
@@ -221,6 +184,43 @@ async def leave(ctx):
     if guildID in currentVCs:
         await currentVCs[guildID].voice.disconnect()
         del currentVCs[guildID]
+
+
+@bot.group()
+async def playlist(ctx):
+    """Manipulate playlists"""
+    pass
+
+
+@playlist.command()
+async def save(ctx, *args):
+    """Saves the current queue into a playlist that can be loaded later on."""
+    if len(args) < 1:
+        await ctx.send("No name specified.")
+
+    queue = currentVCs.get(ctx.message.guild.id)
+    if queue:
+        queue.save(' '.join(args))
+
+
+@playlist.command()
+async def load(ctx, *args):
+    """Loads a saved playlist into the queue."""
+    if len(args) >= 1:
+        queue = currentVCs.get(ctx.message.guild.id)
+        if queue:
+            await queue.load(' '.join(args))
+        return
+
+    # https://stackoverflow.com/a/4500607
+    mtime      = lambda f: os.stat(os.path.join(f"{PLAYLISTDIR}", f)).st_mtime
+    sortedlist = list(sorted(os.listdir(f"{PLAYLISTDIR}"), key=mtime))
+
+    msg = "**Playlists:**```\n"
+    for fname in sortedlist:
+        msg += f"{fname}\n"
+    msg += "```"
+    await ctx.send(msg)
 
 ################################################################################
 
