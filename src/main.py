@@ -96,7 +96,8 @@ async def playlist(ctx):
 async def save(ctx, *args):
     """Saves the current queue into a playlist that can be loaded later on."""
     if len(args) < 1:
-        return
+        await ctx.send("No name specified.")
+
     queue = currentVCs.get(ctx.message.guild.id)
     if queue:
         queue.save(' '.join(args))
