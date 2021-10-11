@@ -99,12 +99,23 @@ async def save(ctx, *args):
 @bot.command()
 async def load(ctx, *args):
     """Loads a saved playlist into the queue."""
-    if len(args) < 1:
-        # TODO: formatting and help and such
-        pass
-    queue = currentVCs.get(ctx.message.guild.id)
-    if queue:
-        await queue.load(' '.join(args))
+    if len(args) >= 1:
+        queue = currentVCs.get(ctx.message.guild.id)
+        if queue:
+            await queue.load(' '.join(args))
+        return
+
+    # https://stackoverflow.com/a/4500607
+    mtime      = lambda f: os.stat(os.path.join(f"{PLAYLISTDIR}", f)).st_mtime
+    sortedlist = list(sorted(os.listdir(f"{PLAYLISTDIR}"), key=mtime))
+    print(sortedlist)
+
+    msg = "**Playlists:**```\n"
+    for fname in sortedlist:
+        print(fname)
+        msg += f"{fname}\n"
+    msg += "```"
+    await ctx.send(msg)
 
 
 @bot.command()
