@@ -108,7 +108,6 @@ async def load(ctx, *args):
     # https://stackoverflow.com/a/4500607
     mtime      = lambda f: os.stat(os.path.join(f"{PLAYLISTDIR}", f)).st_mtime
     sortedlist = list(sorted(os.listdir(f"{PLAYLISTDIR}"), key=mtime))
-    print(sortedlist)
 
     msg = "**Playlists:**```\n"
     for fname in sortedlist:
