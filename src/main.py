@@ -206,21 +206,44 @@ async def save(ctx, *args):
 @playlist.command()
 async def load(ctx, *args):
     """Loads a saved playlist into the queue."""
-    if len(args) >= 1:
-        queue = currentVCs.get(ctx.message.guild.id)
-        if queue:
-            await queue.load(' '.join(args))
+    if len(args) < 1:
+        await ctx.send(format_playlists())
         return
 
+    queue = currentVCs.get(ctx.message.guild.id)
+    if queue:
+        await queue.load(' '.join(args))
+    return
+
+
+
+@playlist.command()
+async def show(ctx, *args):
+    """Show the contents of a playlist"""
+    if len(args) < 1:
+        await ctx.send(format_playlists())
+        return
+
+    name = " ".join(args)
+    if not os.path.exists(f"{PLAYLISTDIR}/{name}"):
+        await ctx.send(f"Playlist `{name}` doesn't exist.")
+        return
+
+    with open(f"{PLAYLISTDIR}/{name}") as f:
+        await ctx.send(file=discord.File(f))
+
+
+def format_playlists() -> str:
+    """Format the playlist directory into a nicely printable message"""
     # https://stackoverflow.com/a/4500607
     mtime      = lambda f: os.stat(os.path.join(f"{PLAYLISTDIR}", f)).st_mtime
     sortedlist = list(sorted(os.listdir(f"{PLAYLISTDIR}"), key=mtime))
 
     msg = "**Playlists:**```\n"
     for fname in sortedlist:
-        msg += f"{fname}\n"
+        msg += f"{os.path.splitext(fname)[0]}\n"
     msg += "```"
-    await ctx.send(msg)
+    return msg
 
 ################################################################################
 
