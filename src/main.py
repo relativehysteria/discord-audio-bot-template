@@ -161,7 +161,7 @@ async def remove(ctx, *args):
 
 
 @bot.command()
-async def play(ctx, *args):
+async def play(ctx, *args, message):
     """Plays something in your voice chat"""
     queue = currentVCs.get(ctx.message.guild.id)
     if not queue:
@@ -174,6 +174,8 @@ async def play(ctx, *args):
     print(f'{strftime(TIME_FORMAT, gmtime())} > ', end='')
     print(f'{CLR_NOTICE}{query}{CLR_NORMAL}')
 
+    emoji = '\U0001f44d'
+    await message.add_reaction(emoji)
     await queue.enqueue(query)
 
 
