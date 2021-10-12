@@ -12,6 +12,8 @@ class Naga(commands.Cog):
         # { guild.id: SongQueue }
         self.queues = {}
 
+        self.default_reaction = "\U0001f44d"
+
 
     async def cog_before_invoke(self, ctx: commands.Context):
         """Sets `ctx.queue` to the server's queue if it exists, otherwise it
@@ -44,6 +46,7 @@ class Naga(commands.Cog):
         if ctx.voice_client:
             await ctx.voice_client.disconnect()
         await destination_vc.connect()
+        await ctx.message.add_reaction(self.default_reaction)
 
 
     @commands.command(name="leave")
@@ -51,4 +54,5 @@ class Naga(commands.Cog):
         """Leaves a voice channel"""
         if ctx.voice_client:
             await ctx.voice_client.disconnect()
+            await ctx.message.add_reaction(self.default_reaction)
             del self.queues[ctx.guild.id]
