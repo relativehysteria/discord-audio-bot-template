@@ -9,3 +9,8 @@ LOG_FORMAT      = \
 LOG_TIME_FORMAT = "%H:%M:%S"
 USE_LOG_COLORS  = True   # Whether to use colored output in the terminal
 LOG_TO_FILE     = True   # Whether to log into a file as well
+
+
+## TOKEN
+
+TOKEN_FILE = "TOKEN"
