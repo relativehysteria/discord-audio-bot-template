@@ -1,3 +1,4 @@
+from discord.ext.commands import commands
 import logging
 
 ## Settings for the primary logger
@@ -10,6 +11,9 @@ LOG_TIME_FORMAT = "%H:%M:%S"
 USE_LOG_COLORS  = True   # Whether to use colored output in the terminal
 LOG_TO_FILE     = True   # Whether to log into a file as well
 
+## Settings for the bot
+
+COMMAND_PREFIX = commands.when_mentioned
 
 ## TOKEN
 

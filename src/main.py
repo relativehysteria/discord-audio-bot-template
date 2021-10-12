@@ -1,6 +1,6 @@
 #!/bin/env python
 from discord.ext.commands import Bot
-from settings import TOKEN_FILE
+from settings import TOKEN_FILE, COMMAND_PREFIX
 from bot import Naga
 from log import globalLog as gLog
 
@@ -17,8 +17,9 @@ except Exception as e:
     raise e
 
 # Run the bot
-naga = Bot("TODO MULTIPLE PREFIXES")
+naga = Bot(command_prefix=COMMAND_PREFIX)
 naga.add_cog(Naga(naga))
+
 
 @naga.event
 async def on_ready():
