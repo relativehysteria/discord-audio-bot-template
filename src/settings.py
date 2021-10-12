@@ -1,4 +1,4 @@
-from discord.ext.commands import commands
+from discord.ext import commands
 import logging
 
 ## Settings for the primary logger

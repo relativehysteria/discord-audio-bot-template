@@ -3,7 +3,7 @@ from itertools import islice
 from song import Song
 
 class SongQueue:
-    def __init__(self)
+    def __init__(self):
         # The song queue
         self.songs = list()
 
