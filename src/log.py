@@ -28,29 +28,25 @@ class ColoredFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-def initialize_logger() -> logging.Logger:
-    """Initializes the primary logger for the bot."""
-    # Create the logger
-    logger = logging.getLogger(__name__)
-    logger.setLevel(LOG_LEVEL)
+# Create the logger
+globalLog = logging.getLogger(__name__)
+globalLog.setLevel(LOG_LEVEL)
 
-    # Create a console handler and add it to the logger
-    consoleHandler = logging.StreamHandler()
-    consoleHandler.setLevel(LOG_LEVEL)
-    if USE_LOG_COLORS:
-        consoleHandler.setFormatter(ColoredFormatter())
-    else:
-        consoleHandler.setFormatter(
-            logging.Formatter(LOG_FORMAT, datefmt=LOG_TIME_FORMAT, style='{')
-        )
-    logger.addHandler(consoleHandler)
+# Create a console handler and add it to the logger
+consoleHandler = logging.StreamHandler()
+consoleHandler.setLevel(LOG_LEVEL)
+if USE_LOG_COLORS:
+    consoleHandler.setFormatter(ColoredFormatter())
+else:
+    consoleHandler.setFormatter(
+        logging.Formatter(LOG_FORMAT, datefmt=LOG_TIME_FORMAT, style='{')
+    )
+globalLog.addHandler(consoleHandler)
 
-    # Create a file handler and add it to the logger
-    if LOG_TO_FILE:
-        fileHandler = logging.FileHandler(LOG_FILE)
-        fileHandler.setFormatter(
-            logging.Formatter(LOG_FORMAT, datefmt=LOG_TIME_FORMAT, style='{')
-        )
-        logger.addHandler(fileHandler)
-
-    return logger
+# Create a file handler and add it to the logger
+if LOG_TO_FILE:
+    fileHandler = logging.FileHandler(LOG_FILE)
+    fileHandler.setFormatter(
+        logging.Formatter(LOG_FORMAT, datefmt=LOG_TIME_FORMAT, style='{')
+    )
+    globalLog.addHandler(fileHandler)
