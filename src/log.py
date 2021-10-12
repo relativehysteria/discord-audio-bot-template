@@ -6,13 +6,14 @@ from settings import *
 class ColoredFormatter(logging.Formatter):
     grey     = "\x1b[38;21m"
     yellow   = "\x1b[33;21m"
+    blueish  = "\x1b[33;36m"
     red      = "\x1b[31;21m"
     bold_red = "\x1b[31;1m"
     reset    = "\x1b[0m"
 
     FORMATS = {
         logging.DEBUG:    grey     + LOG_FORMAT + reset,
-        logging.INFO:     grey     + LOG_FORMAT + reset,
+        logging.INFO:     blueish  + LOG_FORMAT + reset,
         logging.WARNING:  yellow   + LOG_FORMAT + reset,
         logging.ERROR:    red      + LOG_FORMAT + reset,
         logging.CRITICAL: bold_red + LOG_FORMAT + reset
