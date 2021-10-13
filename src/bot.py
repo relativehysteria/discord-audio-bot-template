@@ -3,6 +3,7 @@ from discord.ext import commands
 from log import globalLog as gLog
 from songqueue import SongQueue
 from song import get_song_from_query
+from settings import REACTION_OK, REACTION_ERR
 
 class Naga(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -12,10 +13,6 @@ class Naga(commands.Cog):
         # Queues of all the servers this bot is in.
         # { guild.id: SongQueue }
         self.queues = {}
-
-        # Reaction emojis
-        self.reaction_OK  = "\U0001f44d"
-        self.reaction_ERR = "\U0001F44E"
 
 
     async def cog_before_invoke(self, ctx: commands.Context):
@@ -49,7 +46,7 @@ class Naga(commands.Cog):
         if ctx.queue.voice:
             await ctx.queue.voice.disconnect()
         ctx.queue.voice = await destination_vc.connect()
-        await ctx.message.add_reaction(self.reaction_OK)
+        await ctx.message.add_reaction(REACTION_OK)
 
 
     @commands.command(name="leave")
@@ -57,7 +54,7 @@ class Naga(commands.Cog):
         """Leaves a voice channel"""
         if ctx.queue.voice:
             await ctx.queue.voice.disconnect()
-            await ctx.message.add_reaction(self.reaction_OK)
+            await ctx.message.add_reaction(REACTION_OK)
             del self.queues[ctx.guild.id]
 
 
@@ -68,7 +65,7 @@ class Naga(commands.Cog):
         if query == "" or ctx.queue == None:
             gLog.debug(f"Query: {query}")
             gLog.debug(f"Queue is not None: {ctx.queue is not None}")
-            await ctx.message.add_reaction(self.reaction_ERR)
+            await ctx.message.add_reaction(REACTION_ERR)
             return
 
         gLog.info(f"Query: {query}")
@@ -77,7 +74,7 @@ class Naga(commands.Cog):
         # Return on invalid songs but notify the requester
         gLog.debug(f"Song is valid: {song.is_valid}")
         if not song.is_valid:
-            await ctx.message.add_reaction(self.reaction_ERR)
+            await ctx.message.add_reaction(REACTION_ERR)
             return
 
         # Create an embed and send it to the server
@@ -88,7 +85,7 @@ class Naga(commands.Cog):
         msg.add_field(name="Uploader", value=
                       f"[{song.uploader}]({song.uploader_url})")
         msg.set_thumbnail(url=song.thumbnail)
-        await ctx.message.add_reaction(self.reaction_OK)
+        await ctx.message.add_reaction(REACTION_OK)
         await ctx.send(embed=msg)
 
         ctx.queue.put(song)
