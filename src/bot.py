@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from log import globalLog as gLog
 from songqueue import SongQueue
+from song import get_song_from_query
 
 class Naga(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -45,16 +46,49 @@ class Naga(commands.Cog):
 
         # Join the destination voice channel
         destination_vc = destination_vc or ctx.author.voice.channel
-        if ctx.voice_client:
-            await ctx.voice_client.disconnect()
-        await destination_vc.connect()
+        if ctx.queue.voice:
+            await ctx.queue.voice.disconnect()
+        ctx.queue.voice = await destination_vc.connect()
         await ctx.message.add_reaction(self.reaction_OK)
 
 
     @commands.command(name="leave")
     async def _leave_vc(self, ctx: commands.Context):
         """Leaves a voice channel"""
-        if ctx.voice_client:
-            await ctx.voice_client.disconnect()
+        if ctx.queue.voice:
+            await ctx.queue.voice.disconnect()
             await ctx.message.add_reaction(self.reaction_OK)
             del self.queues[ctx.guild.id]
+
+
+    @commands.command(name="play")
+    async def _play(self, ctx: commands.Context, *args):
+        """Plays something in a voicechat"""
+        query = ' '.join(args)
+        if query == "" or ctx.queue == None:
+            gLog.debug(f"Query: {query}")
+            gLog.debug(f"Queue is not None: {ctx.queue is not None}")
+            await ctx.message.add_reaction(self.reaction_ERR)
+            return
+
+        gLog.info(f"Query: {query}")
+        song = get_song_from_query(query)
+
+        # Return on invalid songs but notify the requester
+        gLog.debug(f"Song is valid: {song.is_valid}")
+        if not song.is_valid:
+            await ctx.message.add_reaction(self.reaction_ERR)
+            return
+
+        # Create an embed and send it to the server
+        msg = discord.Embed(title="Enqueued", description=
+                            f"[{song.title}]({song.url})")
+        msg.add_field(name="Duration", value=
+                      song.duration_formatted)
+        msg.add_field(name="Uploader", value=
+                      f"[{song.uploader}]({song.uploader_url})")
+        msg.set_thumbnail(url=song.thumbnail)
+        await ctx.message.add_reaction(self.reaction_OK)
+        await ctx.send(embed=msg)
+
+        ctx.queue.put(song)
