@@ -31,7 +31,7 @@ class SongQueue():
 
         # Threading for the queue and such
         self._thread      = threading.Thread(target=self._song_player_target)
-        self._stop_thread = False
+        self._stop_thread = False  # Whether the thread should be destroyed
         self._thread.start()
 
     def __getitem__(self, item):
@@ -71,6 +71,12 @@ class SongQueue():
     def skip(self):
         if self.voice.is_playing():
             self.voice.stop()
+
+    def pause(self):
+        if self.voice.is_paused():
+            self.voice.resume()
+        elif self.voice.is_playing():
+            self.voice.pause()
 
     def _song_player_target(self):
         while True:
