@@ -65,8 +65,8 @@ class SongQueue():
         shuffle(self.songs)
 
     def put(self, song: Song):
-        gLog.debug("Added song to queue! Length: " + str(self.__len__()))
         self.songs.put(song)
+        gLog.debug("Added song to queue! Length: " + str(self.__len__()))
 
     def skip(self):
         if self.voice.is_playing():
