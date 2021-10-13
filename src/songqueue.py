@@ -68,6 +68,10 @@ class SongQueue():
         gLog.debug("Added song to queue! Length: " + str(self.__len__()))
         self.songs.put(song)
 
+    def skip(self):
+        if self.voice.is_playing():
+            self.voice.stop()
+
     def _song_player_target(self):
         while True:
             # Change the currently playing song

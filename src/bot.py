@@ -89,3 +89,11 @@ class Naga(commands.Cog):
         await ctx.send(embed=msg)
 
         ctx.queue.put(song)
+
+
+    @commands.command(name="skip")
+    async def _skip(self, ctx: commands.Context):
+        """Skips the currently playing song"""
+        if ctx.queue:
+            ctx.queue.skip()
+            ctx.message.add_reaction(REACTION_OK)
