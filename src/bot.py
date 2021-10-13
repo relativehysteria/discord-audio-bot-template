@@ -12,7 +12,9 @@ class Naga(commands.Cog):
         # { guild.id: SongQueue }
         self.queues = {}
 
-        self.default_reaction = "\U0001f44d"
+        # Reaction emojis
+        self.reaction_OK  = "\U0001f44d"
+        self.reaction_ERR = "\U0001F44E"
 
 
     async def cog_before_invoke(self, ctx: commands.Context):
@@ -46,7 +48,7 @@ class Naga(commands.Cog):
         if ctx.voice_client:
             await ctx.voice_client.disconnect()
         await destination_vc.connect()
-        await ctx.message.add_reaction(self.default_reaction)
+        await ctx.message.add_reaction(self.reaction_OK)
 
 
     @commands.command(name="leave")
@@ -54,5 +56,5 @@ class Naga(commands.Cog):
         """Leaves a voice channel"""
         if ctx.voice_client:
             await ctx.voice_client.disconnect()
-            await ctx.message.add_reaction(self.default_reaction)
+            await ctx.message.add_reaction(self.reaction_OK)
             del self.queues[ctx.guild.id]
