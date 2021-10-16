@@ -38,13 +38,13 @@ class SongQueue():
     def __getitem__(self, item):
         if isinstance(item, slice):
             return list(islice(
-                self._queue,
+                self.songs,
                 item.start,
                 item.stop,
                 item.step)
             )
         else:
-            return self._queue[item]
+            return self.songs[item]
 
 
     def __delitem__(self, idx):
