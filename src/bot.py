@@ -129,3 +129,45 @@ class Naga(commands.Cog):
         if ctx.queue is not None:
             ctx.queue.loop()
             await ctx.message.add_reaction(REACTION_OK)
+
+
+    @commands.command(name="queue")
+    async def _print_queue(self, ctx: commands.Context):
+        """Shows the current queue"""
+        qlen = len(ctx.queue)
+        if ctx.queue is None or (qlen == 0 and ctx.queue.current_song is None):
+            await ctx.send("Queue is empty.")
+            return
+
+        # If the current song is looping, it is prefixed with LOOP,
+        # otherwise its index is 0.
+        #
+        # This doesn't count the currently playing song;
+        # If there is a song playing but there is no song in the queue,
+        # qlen is 0...
+        embed = discord.Embed(title=f"Queue `[{qlen}]`", inline=False)
+
+        # First line of the embed: current song
+        status  = "LOOP:" if ctx.queue.loop_song else "00"
+        current = ctx.queue.current_song
+        msg  = f"`{status}` `[{current.duration_formatted}]`"
+        msg += f" [{current.title}]({current.url})\n\n"
+        embed.add_field(name="Current", value=msg, inline=False)
+
+        # The rest of the embed: the queue
+        msg = ""
+        for (counter, song) in enumerate(ctx.queue, start=1):
+            pre_msg  = f"`{counter:02}` `[{song.duration_formatted}]`"
+            pre_msg += f" [{song.title}]({song.url})\n"
+
+            # Embed value limit is 1024 chars
+            if len(msg + pre_msg) >= 1020:
+                msg += "`...`"
+                break
+            msg += pre_msg
+
+        if msg != "":
+            embed.add_field(name="Next up...", value=msg, inline=False)
+
+        await ctx.message.add_reaction(REACTION_OK)
+        await ctx.send(embed=embed)
