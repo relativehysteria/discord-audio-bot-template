@@ -171,3 +171,17 @@ class Naga(commands.Cog):
 
         await ctx.message.add_reaction(REACTION_OK)
         await ctx.send(embed=embed)
+
+
+    @commands.command(name="remove")
+    async def _remove(self, ctx: commands.Context, *, idx: int):
+        """Removes a song from the queue"""
+        if idx < 0 or idx > len(ctx.queue):
+            return
+
+        if idx == 0:
+            ctx.queue.skip()
+        else:
+            del ctx.queue[idx-1]
+
+        await ctx.message.add_reaction(REACTION_OK)
