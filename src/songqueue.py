@@ -29,6 +29,9 @@ class SongQueue():
         # Currently playing song
         self.current_song = None
 
+        # Whether the currently playing song is looping
+        self.loop_song = False
+
         # Threading for the queue and such
         self._thread      = threading.Thread(target=self._song_player_target)
         self._stop_thread = False  # Whether the thread should be destroyed
@@ -65,7 +68,8 @@ class SongQueue():
 
 
     def clear(self):
-        self.songs.clear()
+        self.songs.queue.clear()
+        self.skip()
 
 
     def shuffle(self):
@@ -78,6 +82,7 @@ class SongQueue():
 
 
     def skip(self):
+        self.loop_song = False
         if self.voice.is_playing():
             self.voice.stop()
 
@@ -89,13 +94,18 @@ class SongQueue():
             self.voice.pause()
 
 
+    def loop(self):
+        self.loop_song = not self.loop_song
+
+
     def _song_player_target(self):
         while True:
             # Change the currently playing song
             self.next_song.clear()
 
-            # Wait for a song to appear in the queue
-            self.current_song = self.songs.get(block=True)
+            if not self.loop_song:
+                # Wait for a song to appear in the queue
+                self.current_song = self.songs.get(block=True)
 
             # FFMPEG options to prevent stream closing on lost connections
             before_options  = "-reconnect 1 -reconnect_streamed 1"

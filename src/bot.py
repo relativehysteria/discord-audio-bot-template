@@ -113,3 +113,19 @@ class Naga(commands.Cog):
         if ctx.queue is not None:
             ctx.queue.shuffle()
             await ctx.message.add_reaction(REACTION_OK)
+
+
+    @commands.command(name="clear")
+    async def _clear(self, ctx: commands.Context):
+        """Clears the queue"""
+        if ctx.queue is not None:
+            ctx.queue.clear()
+            await ctx.message.add_reaction(REACTION_OK)
+
+
+    @commands.command(name="loop")
+    async def _loop(self, ctx: commands.Context):
+        """Loops the currently playing song"""
+        if ctx.queue is not None:
+            ctx.queue.loop()
+            await ctx.message.add_reaction(REACTION_OK)
