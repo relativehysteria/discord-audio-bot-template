@@ -34,6 +34,7 @@ class SongQueue():
         self._stop_thread = False  # Whether the thread should be destroyed
         self._thread.start()
 
+
     def __getitem__(self, item):
         if isinstance(item, slice):
             return list(islice(
@@ -45,38 +46,48 @@ class SongQueue():
         else:
             return self._queue[item]
 
+
     def __delitem__(self, idx):
         del self.songs.queue[idx]
+
 
     def __iter__(self):
         return self.songs.queue.__iter__()
 
+
     def __len__(self):
         return len(self.songs.queue)
+
 
     def __del__(self):
         self._stop_thread = True
         self._thread.join()
 
+
     def clear(self):
         self.songs.clear()
 
+
     def shuffle(self):
         shuffle(self.songs)
+
 
     def put(self, song: Song):
         self.songs.put(song)
         gLog.debug("Added song to queue! Length: " + str(self.__len__()))
 
+
     def skip(self):
         if self.voice.is_playing():
             self.voice.stop()
+
 
     def pause(self):
         if self.voice.is_paused():
             self.voice.resume()
         elif self.voice.is_playing():
             self.voice.pause()
+
 
     def _song_player_target(self):
         while True:
@@ -98,6 +109,7 @@ class SongQueue():
 
             # Wait for the song to finish
             self.next_song.wait()
+
 
     def _play_next_song(self, error=None):
         if error:
