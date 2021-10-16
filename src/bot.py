@@ -94,13 +94,13 @@ class Naga(commands.Cog):
     @commands.command(name="skip")
     async def _skip(self, ctx: commands.Context):
         """Skips the currently playing song"""
-        if ctx.queue:
+        if ctx.queue is not None:
             ctx.queue.skip()
             await ctx.message.add_reaction(REACTION_OK)
 
 
     @commands.command(name="pause")
     async def _pause(self, ctx: commands.Context):
-        if ctx.queue:
+        if ctx.queue is not None:
             ctx.queue.pause()
             await ctx.message.add_reaction(REACTION_OK)
