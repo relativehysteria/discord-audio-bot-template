@@ -101,6 +101,15 @@ class Naga(commands.Cog):
 
     @commands.command(name="pause")
     async def _pause(self, ctx: commands.Context):
+        """Pauses the currently playing song"""
         if ctx.queue is not None:
             ctx.queue.pause()
+            await ctx.message.add_reaction(REACTION_OK)
+
+
+    @commands.command(name="shuffle")
+    async def _shuffle(self, ctx: commands.Context):
+        """Shuffles the queue"""
+        if ctx.queue is not None:
+            ctx.queue.shuffle()
             await ctx.message.add_reaction(REACTION_OK)
