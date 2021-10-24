@@ -79,6 +79,7 @@ class Naga(commands.Cog):
 
         counter = 0
         # TODO: Threading
+        # XXX: Exception("Not Connected to VC") or something.. :(
         for url in urls:
             song = Song(url)
 
