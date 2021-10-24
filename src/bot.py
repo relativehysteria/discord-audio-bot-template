@@ -81,7 +81,10 @@ class Naga(commands.Cog):
         # TODO:
         #   1. Threading
         #   2. "Queing up..." text that gets edited to "Queued up `n` songs"
-        # XXX: Exception("Not Connected to VC") or something.. :(
+        # XXX:
+        #   1. Exception("Not Connected to VC") or something.. :(
+        #   2. Something like "https://www.youtube.com/watch?v=fKKNPLowteY&list=PL8VoWXtCcI7jg259j9_kmze0WhqUIkBEM&index=1"
+        #      downloads the whole playlist ._.
         for url in urls:
             song = Song(url)
 
