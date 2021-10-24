@@ -85,6 +85,7 @@ class Naga(commands.Cog):
         #   1. Exception("Not Connected to VC") or something.. :(
         #   2. Something like "https://www.youtube.com/watch?v=fKKNPLowteY&list=PL8VoWXtCcI7jg259j9_kmze0WhqUIkBEM&index=1"
         #      downloads the whole playlist ._.
+        #   3. 403
         for url in urls:
             song = Song(url)
 
