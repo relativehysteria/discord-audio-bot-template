@@ -162,6 +162,7 @@ class Naga(commands.Cog):
         for (counter, song) in enumerate(ctx.queue, start=1):
             pre_msg  = f"`{counter:02}` "
             pre_msg += str(song)
+            pre_msg += "\n"
 
             # Embed value limit is 1024 chars
             if len(msg + pre_msg) >= 1020:
