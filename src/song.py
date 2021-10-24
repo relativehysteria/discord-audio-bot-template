@@ -1,3 +1,4 @@
+from math import ceil
 from youtube_dl import YoutubeDL
 from log import globalLog as gLog
 
@@ -66,6 +67,7 @@ def parse_duration(duration: int) -> str:
     """Parses the duration in seconds into a readable format"""
     if duration is None:
         return
+    duration = ceil(duration)
     minutes, seconds = divmod(duration, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
