@@ -71,24 +71,26 @@ class Naga(commands.Cog):
         gLog.info(f"Query: {query}")
         song = get_song_from_query(query)
 
-        # Return on invalid songs but notify the requester
-        gLog.debug(f"Song is valid: {song.is_valid}")
-        if not song.is_valid:
+        # Create an embed and send it to the server if the song has a title,
+        # otherwise don't even bother
+        if song.title:
+            msg = discord.Embed(title="Enqueued", description=
+                                f"[{song.title}]({song.url})")
+            if song.duration:
+                msg.add_field(name="Duration", value=
+                              song.duration_formatted)
+            if song.uploader:
+                msg.add_field(name="Uploader", value=
+                              f"[{song.uploader}]({song.uploader_url})")
+            if song.thumbnail:
+                msg.set_thumbnail(url=song.thumbnail)
+            await ctx.send(embed=msg)
+
+        if song.stream:
+            await ctx.message.add_reaction(REACTION_OK)
+            ctx.queue.put(song)
+        else:
             await ctx.message.add_reaction(REACTION_ERR)
-            return
-
-        # Create an embed and send it to the server
-        msg = discord.Embed(title="Enqueued", description=
-                            f"[{song.title}]({song.url})")
-        msg.add_field(name="Duration", value=
-                      song.duration_formatted)
-        msg.add_field(name="Uploader", value=
-                      f"[{song.uploader}]({song.uploader_url})")
-        msg.set_thumbnail(url=song.thumbnail)
-        await ctx.message.add_reaction(REACTION_OK)
-        await ctx.send(embed=msg)
-
-        ctx.queue.put(song)
 
 
     @commands.command(name="skip")
