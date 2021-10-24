@@ -78,7 +78,9 @@ class Naga(commands.Cog):
             return
 
         counter = 0
-        # TODO: Threading
+        # TODO:
+        #   1. Threading
+        #   2. "Queing up..." text that gets edited to "Queued up `n` songs"
         # XXX: Exception("Not Connected to VC") or something.. :(
         for url in urls:
             song = Song(url)
