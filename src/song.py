@@ -29,6 +29,24 @@ class Song:
         gLog.debug(f"Formatted duration: {self.duration_formatted}")
 
 
+    def __str__(self) -> str:
+        string = ""
+
+        if self.duration_formatted:
+            string += f"`[{self.duration_formatted}]` "
+
+        if self.title:
+            if self.url:
+                string += f"[{self.title}]({self.url})"
+            else:
+                string += f"{self.title}"
+        else:
+            string += "[Untitled]"
+
+        return string
+
+
+
 def get_song_from_query(query: str) -> Song:
     """Get the stream url from a general url."""
     query = query.strip()

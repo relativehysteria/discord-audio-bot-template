@@ -151,16 +151,17 @@ class Naga(commands.Cog):
 
         # First line of the embed: current song
         status  = "LOOP:" if ctx.queue.loop_song else "00"
-        current = ctx.queue.current_song
-        msg  = f"`{status}` `[{current.duration_formatted}]`"
-        msg += f" [{current.title}]({current.url})\n\n"
-        embed.add_field(name="Current", value=msg, inline=False)
+        embed.add_field(
+            name="Current",
+            value=f"`{status}` {str(ctx.queue.current_song)}\n\n",
+            inline=False
+        )
 
         # The rest of the embed: the queue
         msg = ""
         for (counter, song) in enumerate(ctx.queue, start=1):
-            pre_msg  = f"`{counter:02}` `[{song.duration_formatted}]`"
-            pre_msg += f" [{song.title}]({song.url})\n"
+            pre_msg  = f"`{counter:02}` "
+            pre_msg += str(song)
 
             # Embed value limit is 1024 chars
             if len(msg + pre_msg) >= 1020:
