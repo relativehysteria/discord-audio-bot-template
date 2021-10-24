@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from log import globalLog as gLog
 from songqueue import SongQueue
-from song import get_song_from_query
+from song import Song
 from settings import REACTION_OK, REACTION_ERR
 
 class Naga(commands.Cog):
@@ -69,26 +69,44 @@ class Naga(commands.Cog):
             return
 
         gLog.info(f"Query: {query}")
-        song = get_song_from_query(query)
 
-        # Create an embed and send it to the server if the song has a title,
-        # otherwise don't even bother
-        if song.title:
-            msg = discord.Embed(title="Enqueued", description=
-                                f"[{song.title}]({song.url})")
-            if song.duration:
-                msg.add_field(name="Duration", value=
-                              song.duration_formatted)
-            if song.uploader:
-                msg.add_field(name="Uploader", value=
-                              f"[{song.uploader}]({song.uploader_url})")
-            if song.thumbnail:
-                msg.set_thumbnail(url=song.thumbnail)
-            await ctx.send(embed=msg)
+        # Get a list of urls to a playlist (if a playlist was given, otherwise
+        # just get [single_url]).
+        urls = Song.get_urls_from_query(query)
+        if len(urls) == 0:
+            await ctx.message.add_reaction(REACTION_ERR)
+            return
 
-        if song.stream:
+        counter = 0
+        # TODO: Threading
+        for url in urls:
+            song = Song(url)
+
+            # Create an embed and send it to the server if the song has a title,
+            # otherwise don't even bother.
+            # Don't create embeds for playlists.
+            if len(urls) == 1 and song.title:
+                msg = discord.Embed(title="Enqueued", description=
+                                    f"[{song.title}]({song.url})")
+                if song.duration:
+                    msg.add_field(name="Duration", value=
+                                  song.duration_formatted)
+                if song.uploader:
+                    msg.add_field(name="Uploader", value=
+                                  f"[{song.uploader}]({song.uploader_url})")
+                if song.thumbnail:
+                    msg.set_thumbnail(url=song.thumbnail)
+                await ctx.send(embed=msg)
+
+            if song.stream:
+                ctx.queue.put(song)
+                counter += 1
+
+        if len(urls) != 1:
+            await ctx.send(f"Queued up `{counter}` songs.")
+
+        if counter == len(urls):
             await ctx.message.add_reaction(REACTION_OK)
-            ctx.queue.put(song)
         else:
             await ctx.message.add_reaction(REACTION_ERR)
 
@@ -162,6 +180,7 @@ class Naga(commands.Cog):
         for (counter, song) in enumerate(ctx.queue, start=1):
             pre_msg  = f"`{counter:02}` "
             pre_msg += str(song)
+            pre_msg += "\n"
 
             # Embed value limit is 1024 chars
             if len(msg + pre_msg) >= 1020:

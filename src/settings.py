@@ -4,7 +4,7 @@ import logging
 ## Settings for the primary logger
 
 LOG_FILE        = r"naga.log"
-LOG_LEVEL       = logging.INFO
+LOG_LEVEL       = logging.DEBUG
 LOG_FORMAT      = \
     "{asctime} | {levelname:^8} | {name} | ({filename}:{lineno}) >> {message}"
 LOG_TIME_FORMAT = "%H:%M:%S"
