@@ -87,7 +87,6 @@ class Naga(commands.Cog):
         #      downloads the whole playlist ._.
         #   3. 403
         for url in urls:
-
             song = Song(url)
 
             # Create an embed and send it to the server if the song has a title,
@@ -109,6 +108,9 @@ class Naga(commands.Cog):
             if song.stream:
                 ctx.queue.put(song)
                 counter += 1
+                await to_update_msg.edit(content=
+                    f"Queued up `{counter}` songs so far.."
+                )
 
         if len(urls) != 1:
             await to_update_msg.edit(content=f"Queued up `{counter}` songs.")
