@@ -64,6 +64,7 @@ class SongQueue():
 
     def __del__(self):
         self._stop_thread = True
+        self.clear()
         self._thread.join()
 
 
@@ -99,7 +100,7 @@ class SongQueue():
 
 
     def _song_player_target(self):
-        while True:
+        while not self._stop_thread:
             # Change the currently playing song
             self.next_song.clear()
 

@@ -53,9 +53,9 @@ class Naga(commands.Cog):
     async def _leave_vc(self, ctx: commands.Context):
         """Leaves a voice channel"""
         if ctx.queue.voice:
+            del self.queues[ctx.guild.id]
             await ctx.queue.voice.disconnect()
             await ctx.message.add_reaction(REACTION_OK)
-            del self.queues[ctx.guild.id]
 
 
     @commands.command(name="play")
