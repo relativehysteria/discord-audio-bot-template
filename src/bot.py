@@ -77,7 +77,7 @@ class Naga(commands.Cog):
             await ctx.message.add_reaction(REACTION_ERR)
             return
 
-        to_update_msg = await ctx.send(f"Queing up...")
+        to_update_msg = await ctx.send(f"Queuing up...")
         counter = 0
         # TODO:
         #   1. Threading
@@ -108,9 +108,13 @@ class Naga(commands.Cog):
             if song.stream:
                 ctx.queue.put(song)
                 counter += 1
-                await to_update_msg.edit(content=
-                    f"Queued up `{counter}` songs so far.."
-                )
+
+                if len(urls) != 1:
+                    await to_update_msg.edit(content=
+                        f"Queued up `{counter}` songs so far.."
+                    )
+                else:
+                    await to_update_msg.delete()
 
         if len(urls) != 1:
             await to_update_msg.edit(content=f"Queued up `{counter}` songs.")
