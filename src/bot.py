@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from log import globalLog as gLog
 from songqueue import SongQueue
-from song import get_song_from_query
+from song import Song
 from settings import REACTION_OK, REACTION_ERR
 
 class Naga(commands.Cog):
@@ -69,26 +69,54 @@ class Naga(commands.Cog):
             return
 
         gLog.info(f"Query: {query}")
-        song = get_song_from_query(query)
 
-        # Create an embed and send it to the server if the song has a title,
-        # otherwise don't even bother
-        if song.title:
-            msg = discord.Embed(title="Enqueued", description=
-                                f"[{song.title}]({song.url})")
-            if song.duration:
-                msg.add_field(name="Duration", value=
-                              song.duration_formatted)
-            if song.uploader:
-                msg.add_field(name="Uploader", value=
-                              f"[{song.uploader}]({song.uploader_url})")
-            if song.thumbnail:
-                msg.set_thumbnail(url=song.thumbnail)
-            await ctx.send(embed=msg)
+        # Get a list of urls to a playlist (if a playlist was given, otherwise
+        # just get [single_url]).
+        urls = Song.get_urls_from_query(query)
+        if len(urls) == 0:
+            await ctx.message.add_reaction(REACTION_ERR)
+            return
 
-        if song.stream:
+        to_update_msg = await ctx.send(f"Queing up...")
+        counter = 0
+        # TODO:
+        #   1. Threading
+        # XXX:
+        #   1. Exception("Not Connected to VC") or something.. :(
+        #   2. Something like "https://www.youtube.com/watch?v=fKKNPLowteY&list=PL8VoWXtCcI7jg259j9_kmze0WhqUIkBEM&index=1"
+        #      downloads the whole playlist ._.
+        #   3. 403
+        for url in urls:
+            song = Song(url)
+
+            # Create an embed and send it to the server if the song has a title,
+            # otherwise don't even bother.
+            # Don't create embeds for playlists.
+            if len(urls) == 1 and song.title:
+                msg = discord.Embed(title="Enqueued", description=
+                                    f"[{song.title}]({song.url})")
+                if song.duration:
+                    msg.add_field(name="Duration", value=
+                                  song.duration_formatted)
+                if song.uploader:
+                    msg.add_field(name="Uploader", value=
+                                  f"[{song.uploader}]({song.uploader_url})")
+                if song.thumbnail:
+                    msg.set_thumbnail(url=song.thumbnail)
+                await ctx.send(embed=msg)
+
+            if song.stream:
+                ctx.queue.put(song)
+                counter += 1
+                await to_update_msg.edit(content=
+                    f"Queued up `{counter}` songs so far.."
+                )
+
+        if len(urls) != 1:
+            await to_update_msg.edit(content=f"Queued up `{counter}` songs.")
+
+        if counter == len(urls):
             await ctx.message.add_reaction(REACTION_OK)
-            ctx.queue.put(song)
         else:
             await ctx.message.add_reaction(REACTION_ERR)
 
