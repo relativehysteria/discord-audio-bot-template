@@ -73,7 +73,7 @@ class SongQueue():
 
 
     def shuffle(self):
-        shuffle(self.songs)
+        shuffle(self.songs.queue)
 
 
     def put(self, song: Song):
