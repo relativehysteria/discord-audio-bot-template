@@ -77,16 +77,17 @@ class Naga(commands.Cog):
             await ctx.message.add_reaction(REACTION_ERR)
             return
 
+        to_update_msg = await ctx.send(f"Queing up...")
         counter = 0
         # TODO:
         #   1. Threading
-        #   2. "Queing up..." text that gets edited to "Queued up `n` songs"
         # XXX:
         #   1. Exception("Not Connected to VC") or something.. :(
         #   2. Something like "https://www.youtube.com/watch?v=fKKNPLowteY&list=PL8VoWXtCcI7jg259j9_kmze0WhqUIkBEM&index=1"
         #      downloads the whole playlist ._.
         #   3. 403
         for url in urls:
+
             song = Song(url)
 
             # Create an embed and send it to the server if the song has a title,
@@ -110,7 +111,7 @@ class Naga(commands.Cog):
                 counter += 1
 
         if len(urls) != 1:
-            await ctx.send(f"Queued up `{counter}` songs.")
+            await to_update_msg.edit(content=f"Queued up `{counter}` songs.")
 
         if counter == len(urls):
             await ctx.message.add_reaction(REACTION_OK)
