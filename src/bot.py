@@ -79,13 +79,11 @@ class Naga(commands.Cog):
 
         to_update_msg = await ctx.send(f"Queuing up...")
         counter = 0
-        # TODO:
-        #   1. Threading
         # XXX:
-        #   1. Exception("Not Connected to VC") or something.. :(
-        #   2. Something like "https://www.youtube.com/watch?v=fKKNPLowteY&list=PL8VoWXtCcI7jg259j9_kmze0WhqUIkBEM&index=1"
+        #   1. Something like "https://www.youtube.com/watch?v=fKKNPLowteY&list=PL8VoWXtCcI7jg259j9_kmze0WhqUIkBEM&index=1"
         #      downloads the whole playlist ._.
-        #   3. 403
+        #   2. 403
+        #   3. Stop downloading when the bot disconnects
         for url in urls:
             song = Song(url)
 
