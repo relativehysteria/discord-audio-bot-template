@@ -83,7 +83,6 @@ class Naga(commands.Cog):
         # XXX:
         #   1. Something like "https://www.youtube.com/watch?v=fKKNPLowteY&list=PL8VoWXtCcI7jg259j9_kmze0WhqUIkBEM&index=1"
         #      downloads the whole playlist ._.
-        #   2. 403
         for url in urls:
             # Stop downloading when the bot disconnects
             if ctx.queue._stop_thread:

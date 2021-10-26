@@ -56,7 +56,11 @@ class Song:
         # Discord can't parse DASH manifests, i think?
         ydl_opts = {'youtube_include_dash_manifest': False}
         with YoutubeDL(ydl_opts) as ytdl:
-            result = ytdl.extract_info(query, download=False)
+            try:
+                ytdl.cache.remove()
+                result = ytdl.extract_info(query, download=False)
+            except youtube_dl.DownloadError as err:
+                gLog.error(err)
 
         if isinstance(result, list):
             if len(result) == 0:
