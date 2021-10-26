@@ -62,10 +62,12 @@ class SongQueue():
         return len(self.songs.queue)
 
 
-    def __del__(self):
+    def destruct(self):
         self._stop_thread = True
         self.clear()
+        gLog.debug("Waiting for the queue thread to join...")
         self._thread.join()
+        gLog.debug("Queue thread joined!")
 
 
     def clear(self):

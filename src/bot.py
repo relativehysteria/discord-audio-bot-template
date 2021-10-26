@@ -53,8 +53,9 @@ class Naga(commands.Cog):
     async def _leave_vc(self, ctx: commands.Context):
         """Leaves a voice channel"""
         if ctx.queue.voice:
+            await self.voice.disconnect()
+            await ctx.queue.destruct()
             del self.queues[ctx.guild.id]
-            await ctx.queue.voice.disconnect()
             await ctx.message.add_reaction(REACTION_OK)
 
 
@@ -83,8 +84,10 @@ class Naga(commands.Cog):
         #   1. Something like "https://www.youtube.com/watch?v=fKKNPLowteY&list=PL8VoWXtCcI7jg259j9_kmze0WhqUIkBEM&index=1"
         #      downloads the whole playlist ._.
         #   2. 403
-        #   3. Stop downloading when the bot disconnects
         for url in urls:
+            # Stop downloading when the bot disconnects
+            if ctx.queue._stop_thread:
+                break
             song = Song(url)
 
             # Create an embed and send it to the server if the song has a title,
