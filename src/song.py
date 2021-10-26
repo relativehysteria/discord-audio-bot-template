@@ -57,10 +57,10 @@ class Song:
         ydl_opts = {'youtube_include_dash_manifest': False}
         with YoutubeDL(ydl_opts) as ytdl:
             try:
-                ytdl.cache.remove()
                 result = ytdl.extract_info(query, download=False)
             except youtube_dl.DownloadError as err:
-                gLog.error(err)
+                gLog.error(f"{err}... Removing cache dir.")
+                ytdl.cache.remove()
 
         if isinstance(result, list):
             if len(result) == 0:
