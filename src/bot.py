@@ -54,7 +54,7 @@ class Naga(commands.Cog):
         """Leaves a voice channel"""
         if ctx.queue.voice:
             await ctx.queue.voice.disconnect()
-            await ctx.queue.destruct()
+            ctx.queue.destruct()
             del self.queues[ctx.guild.id]
             await ctx.message.add_reaction(REACTION_OK)
 
