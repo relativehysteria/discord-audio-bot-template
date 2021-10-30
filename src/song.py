@@ -53,8 +53,12 @@ class Song:
         """Get the stream url from a general url."""
         query = query.strip()
 
-        # Discord can't parse DASH manifests, i think?
-        ydl_opts = {'youtube_include_dash_manifest': False}
+        # Don't parse DASH manifests and don't download whole playlists if
+        # a playlist index was given.
+        ydl_opts = {
+            'youtube_include_dash_manifest': False,
+            'noplaylist': True,
+        }
         with YoutubeDL(ydl_opts) as ytdl:
             try:
                 result = ytdl.extract_info(query, download=False)

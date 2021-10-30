@@ -80,9 +80,6 @@ class Naga(commands.Cog):
 
         to_update_msg = await ctx.send(f"Queuing up...")
         counter = 0
-        # XXX:
-        #   1. Something like "https://www.youtube.com/watch?v=fKKNPLowteY&list=PL8VoWXtCcI7jg259j9_kmze0WhqUIkBEM&index=1"
-        #      downloads the whole playlist ._.
         for url in urls:
             # Stop downloading when the bot disconnects
             if ctx.queue._stop_thread:
