@@ -1,3 +1,3 @@
-# Naga siren
+# Nāga Siren
 
-A music bot :)
+A music bot for Discord :)
