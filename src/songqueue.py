@@ -3,7 +3,7 @@ from queue import Queue
 from random import shuffle
 from itertools import islice
 
-import youtube_dl
+import yt_dlp as youtube_dl
 import discord
 
 from song import Song

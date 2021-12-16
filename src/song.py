@@ -1,5 +1,5 @@
 from math import ceil
-from youtube_dl import YoutubeDL
+from yt_dlp import YoutubeDL
 from log import globalLog as gLog
 
 class Song:
