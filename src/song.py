@@ -66,6 +66,7 @@ class Song:
             except yt_dlp.DownloadError as err:
                 gLog.error(f"{err}... Removing cache dir.")
                 ytdl.cache.remove()
+                return dict()
 
         if isinstance(result, list):
             if len(result) == 0:
@@ -132,8 +133,6 @@ class Song:
             url = entry.get('url')
             if url is None:
                 continue
-            if entry.get("ie_key") == "Youtube":
-                url = f"https://www.youtube.com/watch?v={url}"
             urls.append(url)
 
         gLog.debug(f"Parsed urls: {urls}")
