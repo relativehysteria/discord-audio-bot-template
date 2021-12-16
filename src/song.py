@@ -1,4 +1,5 @@
 from math import ceil
+import yt_dlp
 from yt_dlp import YoutubeDL
 from log import globalLog as gLog
 
@@ -62,7 +63,7 @@ class Song:
         with YoutubeDL(ydl_opts) as ytdl:
             try:
                 result = ytdl.extract_info(query, download=False)
-            except youtube_dl.DownloadError as err:
+            except yt_dlp.DownloadError as err:
                 gLog.error(f"{err}... Removing cache dir.")
                 ytdl.cache.remove()
 
