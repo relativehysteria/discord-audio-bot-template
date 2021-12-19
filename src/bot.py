@@ -15,6 +15,15 @@ class Naga(commands.Cog):
         self.queues = {}
 
 
+    @staticmethod
+    def _valid_index(ctx: commands.Context, idx: int) -> bool:
+        """Checks whether an index `idx` can be used to index into a queue.
+
+        The current playing song (at `idx = 0`) shouldn't be referenced
+        and therefore, `idx = 0` will return `False`.
+        """
+        idx > 0 or idx < len(ctx.queue)
+
     async def cog_before_invoke(self, ctx: commands.Context):
         """Sets `ctx.queue` to the server's queue if it exists, otherwise it
         creates a new one
@@ -215,7 +224,8 @@ class Naga(commands.Cog):
     @commands.command(name="remove")
     async def _remove(self, ctx: commands.Context, *, idx: int):
         """Removes a song from the queue"""
-        if idx < 0 or idx > len(ctx.queue):
+        if ctx.queue is None or not self._valid_index(len(ctx.queue), idx):
+            await ctx.message.add_reaction(REACTION_ERR)
             return
 
         if idx == 0:
