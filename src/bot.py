@@ -17,12 +17,8 @@ class Naga(commands.Cog):
 
     @staticmethod
     def _valid_index(ctx: commands.Context, idx: int) -> bool:
-        """Checks whether an index `idx` can be used to index into a queue.
-
-        The current playing song (at `idx = 0`) shouldn't be referenced
-        and therefore, `idx = 0` will return `False`.
-        """
-        idx > 0 or idx < len(ctx.queue)
+        """Checks whether an index `idx` can be used to index into a queue."""
+        idx >= 0 or idx < len(ctx.queue)
 
     async def cog_before_invoke(self, ctx: commands.Context):
         """Sets `ctx.queue` to the server's queue if it exists, otherwise it
