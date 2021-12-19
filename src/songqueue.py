@@ -127,5 +127,5 @@ class SongQueue():
     def _play_next_song(self, error=None):
         if error:
             gLog.error(str(error))
-            raise Exception
+            return
         self.next_song.set()
