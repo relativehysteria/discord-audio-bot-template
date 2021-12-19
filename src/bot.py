@@ -52,7 +52,7 @@ class Naga(commands.Cog):
     @commands.command(name="leave")
     async def _leave_vc(self, ctx: commands.Context):
         """Leaves a voice channel"""
-        if ctx.queue.voice:
+        if ctx.queue is not None and ctx.queue.voice:
             await ctx.queue.voice.disconnect()
             ctx.queue.destruct()
             del self.queues[ctx.guild.id]
@@ -63,7 +63,7 @@ class Naga(commands.Cog):
     async def _play(self, ctx: commands.Context, *args):
         """Plays something in a voicechat"""
         query = ' '.join(args)
-        if query == "" or ctx.queue == None:
+        if query == "" or ctx.queue is None:
             gLog.debug(f"Query: {query}")
             gLog.debug(f"Queue is not None: {ctx.queue is not None}")
             await ctx.message.add_reaction(REACTION_ERR)
