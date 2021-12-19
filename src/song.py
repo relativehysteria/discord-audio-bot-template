@@ -59,6 +59,7 @@ class Song:
         ydl_opts = {
             'youtube_include_dash_manifest': False,
             'noplaylist': True,
+            'quiet': True,
         }
         with YoutubeDL(ydl_opts) as ytdl:
             try:
@@ -118,7 +119,10 @@ class Song:
         if not query.startswith("http"):
             query = "ytsearch:" + query
 
-        ydl_opts = { "extract_flat": True }
+        ydl_opts = {
+            "extract_flat": True,
+            "quiet": True,
+        }
         with YoutubeDL(ydl_opts) as ytdl:
             result = ytdl.extract_info(query, download=False)
 
