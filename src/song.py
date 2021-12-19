@@ -80,7 +80,12 @@ class Song:
     @staticmethod
     def _get_stream_url(ytdl_result: dict) -> str:
         """Returns the first found audio stream"""
-        for i in ytdl_result.get('formats'):
+        formats = ytdl_result.get('formats')
+
+        if formats is None:
+            return
+
+        for i in formats:
             if i['acodec'] != "none":
                 return i['url']
 
@@ -90,6 +95,7 @@ class Song:
         """Parses the duration in seconds into a readable format"""
         if duration is None:
             return
+
         duration = ceil(duration)
         minutes, seconds = divmod(duration, 60)
         hours, minutes = divmod(minutes, 60)

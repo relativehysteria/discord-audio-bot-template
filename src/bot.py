@@ -84,7 +84,11 @@ class Naga(commands.Cog):
             # Stop downloading when the bot disconnects
             if ctx.queue._stop_thread:
                 break
+
+            # Get the song and make sure that it is valid
             song = Song(url)
+            if song.stream is None:
+                continue
 
             # Create an embed and send it to the server if the song has a title,
             # otherwise don't even bother.
@@ -102,17 +106,19 @@ class Naga(commands.Cog):
                     msg.set_thumbnail(url=song.thumbnail)
                 await ctx.send(embed=msg)
 
-            if song.stream:
-                ctx.queue.put(song)
-                counter += 1
+            # Put the song into the queue
+            ctx.queue.put(song)
+            counter += 1
 
-                if len(urls) != 1:
-                    await to_update_msg.edit(content=
-                        f"Queued up `{counter}` songs so far.."
-                    )
-                else:
-                    await to_update_msg.delete()
+            # Notify the user that the song has been put into the queue.
+            if len(urls) != 1:
+                await to_update_msg.edit(content=
+                    f"Queued up `{counter}` songs so far.."
+                )
+            else:
+                await to_update_msg.delete()
 
+        # Finish queuing and notify the user about the status.
         if len(urls) != 1:
             await to_update_msg.edit(content=f"Queued up `{counter}` songs.")
 
