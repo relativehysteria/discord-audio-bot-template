@@ -24,7 +24,7 @@ gLog.debug(f"Intents: {intents} | Client: {client} | Tree: {cmd_tree}")
 
 # Run the bot
 @client.event
-async def on_read():
+async def on_ready():
     latency = int(client.latency * 1000)
     gLog.info("READY!")
     gLog.info(f"Startup latency: {latency}ms")
