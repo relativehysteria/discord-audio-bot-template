@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import discord
 from discord import app_commands
-from settings import TOKEN_FILE
+from settings import TOKEN_FILE, APPLICATION_FILE
 from log import globalLog as gLog
 
 if __name__ != "__main__":
@@ -12,6 +12,8 @@ if __name__ != "__main__":
 try:
     with open(TOKEN_FILE) as f:
         token = f.read().strip()
+    with open(APPLICATION_FILE) as f:
+        app_id = f.read().strip()
 except Exception as e:
     gLog.critical(f"{e}")
     raise e

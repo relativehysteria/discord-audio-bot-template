@@ -15,4 +15,5 @@ LOG_FORMAT      = \
 
 ## Settings for the bot
 
-TOKEN_FILE = "TOKEN"
+TOKEN_FILE       = "TOKEN"
+APPLICATION_FILE = "APPLICATION_ID"
