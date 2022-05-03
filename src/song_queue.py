@@ -2,7 +2,7 @@ import multiprocessing as mp
 from random import shuffle
 from itertools import islice
 import discord
-
+from log import globalLog as gLog
 
 class SongQueue():
     """The song queue.
