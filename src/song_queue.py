@@ -10,12 +10,18 @@ class SongQueue():
     This class doesn't use `asyncio.queue`, but rather implements its stuff
     in its own, nicely inefficient way.
     """
-    def __init__(self):
+    def __init__(self, voice_client: discord.VoiceClient):
+        """
+        `voice_client` is the *client* of a voice channel.
+            That is, the initializer expects a voice connection that is already
+            active, not just a voice channel.
+        """
+        gLog.debug("Initialized queue")
         # The song queue
         self.songs = mp.Queue()
 
         # The voice channel this queue belongs to
-        self.voice = None
+        self.voice = voice_client
 
         # Indicates whether the next song should be played
         self.next_song = mp.Event()
@@ -26,14 +32,15 @@ class SongQueue():
         # Whether the current song is being played on a loop
         self.loop_song = False
 
-        # Threading for the queue and such
+        # The queue process
         self._process = mp.Process(target=self._song_player_target)
         self._process.start()
 
 
     def __del__(self):
-        gLog.debug("Terminating the queue process...")
+        gLog.debug("Terminating the queue process and disconnecting...")
         self._process.terminate()
+        self.voice.disconnect()
 
 
     def __getitem__(self, item):
